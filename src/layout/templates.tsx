@@ -22,19 +22,23 @@ function ensureAbsoluteUrl(url: string | undefined): string {
 // --- TopBar Component ---
 const TopBar: FC<{ user: string }> = (props) => {
 	return (
-		<header className="bg-white border-b border-neutral-200 shadow-sm sticky top-0 z-10">
-			<div className="container mx-auto max-w-5xl px-4">
+		<header className="bg-white border-b-3 border-black sticky top-0 z-10 shadow-md">
+			<div className="container mx-auto max-w-4xl px-4">
 				<div className="flex items-center justify-between h-16">
 					<div className="flex items-center">
-						<a href="/" className="flex items-center space-x-2 text-xl font-semibold text-primary-700 hover:text-primary-800 transition-colors">
-							{/* Simple Book Icon */}
-							<svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-								<path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-							</svg>
-							<span>Edu Articles</span>
+						<a href="/" className="flex items-center space-x-2 text-xl font-bold text-neutral-900 hover:text-primary-600 transition-colors">
+							{/* Book Icon with Neo Brutalist style */}
+							<div className="w-9 h-9 bg-primary-500 flex items-center justify-center border-2 border-black shadow-sm">
+								<svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="black">
+									<path strokeLinecap="square" strokeLinejoin="miter" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+								</svg>
+							</div>
+							<span className="relative">
+								Edu
+								<span className="neo-marker">Articles</span>
+							</span>
 						</a>
 					</div>
-					{/* Optional User display can be added here */}
 				</div>
 			</div>
 		</header>
@@ -45,12 +49,12 @@ const TopBar: FC<{ user: string }> = (props) => {
 const Footer: FC = () => {
 	const currentYear = new Date().getFullYear();
 	return (
-		<footer className="bg-neutral-100 border-t border-neutral-200 mt-12">
-			<div className="container mx-auto max-w-5xl px-4 py-6 text-center">
-				<p className="text-neutral-600 text-sm">
-					© {currentYear} Educational Article Generator.
+		<footer className="border-t-3 border-black mt-12 bg-white">
+			<div className="container mx-auto max-w-4xl px-4 py-6 text-center">
+				<p className="text-neutral-800 font-medium">
+					© {currentYear} Educational Article Generator
 				</p>
-				<p className="text-xs text-neutral-500 mt-1">Powered by Cloudflare Workers & Google Gemini</p>
+				<p className="text-sm mt-1 bg-primary-100 inline-block px-3 py-1 border border-primary-300">Powered by Cloudflare Workers & Google Gemini</p>
 			</div>
 		</footer>
 	);
@@ -66,15 +70,15 @@ export const Layout: FC<{ title?: string; children: any; user?: string }> = (pro
 				<link href="/styles.css" rel="stylesheet" />
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
 				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-				<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+				<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 				<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet" />
 				<title>{props.title || "Educational Article Generator"}</title>
 				<meta name="description" content="Generate educational articles for educators using AI." />
-				<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230284c7' stroke-width='1.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25' /%3E%3C/svg%3E" />
+				<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300b7ff' stroke='black' stroke-width='2'%3E%3Cpath stroke-linecap='square' stroke-linejoin='miter' d='M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25' /%3E%3C/svg%3E" />
 			</head>
 			<body className="bg-neutral-50 min-h-screen flex flex-col">
 				<TopBar user={props.user || 'unknown'} />
-				<main className="flex-grow py-8 md:py-10">
+				<main className="flex-grow py-8 md:py-12">
 					{props.children}
 				</main>
 				<Footer />
@@ -86,18 +90,20 @@ export const Layout: FC<{ title?: string; children: any; user?: string }> = (pro
 // --- ArticleList Component ---
 export const ArticleList: FC<{ articles: { results: ArticleTypeDB[] } }> = (props) => {
 	return (
-		<div className="container mx-auto max-w-5xl px-4">
-			<div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg shadow-sm">
-				<div className="flex">
-					<div className="flex-shrink-0">
-						<svg className="h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-							<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-						</svg>
+		<div className="container mx-auto max-w-4xl px-3 md:px-4">
+			<div className="neo-box bg-accent-100 mb-6 md:mb-8 p-4 md:p-5">
+				<div className="flex flex-col sm:flex-row">
+					<div className="flex-shrink-0 mb-3 sm:mb-0 sm:mr-4">
+						<div className="w-10 h-10 bg-primary-500 flex items-center justify-center border-2 border-black">
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="black" strokeWidth={2}>
+								<path strokeLinecap="square" strokeLinejoin="miter" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+						</div>
 					</div>
-					<div className="ml-3">
-						<h3 className="text-sm font-medium text-blue-800">AI Article Generator</h3>
-						<div className="mt-2 text-sm text-blue-700">
-							<p>Enter a topic to generate an educational article. Articles are generated using Google Search for information and AI for writing.</p>
+					<div>
+						<h3 className="text-lg font-bold text-neutral-900">AI Article Generator</h3>
+						<div className="mt-2 text-neutral-800">
+							<p>Enter a topic to generate an educational article. Articles are created using Google Search for research and Gemini AI for writing.</p>
 						</div>
 					</div>
 				</div>
@@ -105,48 +111,76 @@ export const ArticleList: FC<{ articles: { results: ArticleTypeDB[] } }> = (prop
 
 			<div className="card">
 				<div className="p-0">
-					<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-0 p-4 md:p-6 border-b border-neutral-200">
-						<h2 className="text-xl sm:text-2xl font-semibold text-neutral-900">
+					<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-0 p-4 sm:p-5 border-b-3 border-black bg-neutral-100">
+						<h2 className="text-xl sm:text-2xl font-bold text-neutral-900">
 							Generated Articles
 						</h2>
 						<a
 							href="/create"
-							className="btn btn-primary mt-3 sm:mt-0 flex items-center justify-center gap-2 px-4 py-2 text-sm md:text-base"
+							className="btn btn-primary mt-3 sm:mt-0 flex items-center justify-center gap-2 px-4 py-2 w-full sm:w-auto"
 						>
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-								<path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+								<path strokeLinecap="square" strokeLinejoin="miter" d="M12 4.5v15m7.5-7.5h-15" />
 							</svg>
 							<span>New Article</span>
 						</a>
 					</div>
 
-					<div className="overflow-x-auto">
-						<table className="w-full">
+					{/* Mobile-first layout - Cards for small screens, table for larger screens */}
+					<div className="md:hidden">
+						{props.articles.results.map((obj) => (
+							<div key={obj.id} className="mb-4 bg-white border-3 border-black p-4 shadow-md">
+								<div className="flex justify-between items-start mb-3">
+									<h3 className="text-base font-bold line-clamp-2 pr-2">{obj.topic}</h3>
+									{obj.status === 1 && <span className="badge badge-warning shrink-0">Generating...</span>}
+									{obj.status === 2 && <span className="badge badge-success shrink-0">Complete</span>}
+									{obj.status === 3 && <span className="badge badge-error shrink-0">Error</span>}
+								</div>
+
+								<div className="text-xs font-mono mb-3 bg-neutral-50 px-2 py-1 inline-block border border-neutral-200">
+									{obj.created_at ? formatManilaTime(new Date(obj.created_at)) : 'N/A'}
+								</div>
+
+								<div className="mt-3 text-right">
+									<a
+										href={"/details/" + obj.id}
+										className="btn btn-secondary btn-sm w-full"
+									>
+										{obj.status === 1 ? "View Progress" : (obj.status === 2 ? "Read Article" : "View Error")}
+									</a>
+								</div>
+							</div>
+						))}
+					</div>
+
+					{/* Table layout for medium screens and up */}
+					<div className="hidden md:block overflow-hidden">
+						<table className="table-neo">
 							<thead>
-								<tr className="border-b border-neutral-200 bg-neutral-50">
-									<th className="px-4 sm:px-6 py-3 text-left font-medium text-neutral-600 text-xs sm:text-sm tracking-wider uppercase">Topic / Title</th>
-									<th className="px-4 sm:px-6 py-3 text-left font-medium text-neutral-600 text-xs sm:text-sm tracking-wider uppercase">Status</th>
-									<th className="px-4 sm:px-6 py-3 text-left font-medium text-neutral-600 text-xs sm:text-sm tracking-wider uppercase whitespace-nowrap">Date Created</th>
-									<th className="px-4 sm:px-6 py-3 text-right font-medium text-neutral-600 text-xs sm:text-sm tracking-wider uppercase">Actions</th>
+								<tr>
+									<th className="text-left">Topic / Title</th>
+									<th className="text-left">Status</th>
+									<th className="text-left">Date Created</th>
+									<th className="text-right">Actions</th>
 								</tr>
 							</thead>
-							<tbody className="divide-y divide-neutral-200">
+							<tbody className="bg-white">
 								{props.articles.results.map((obj) => (
-									<tr key={obj.id} className="hover:bg-neutral-50 transition-colors duration-150">
-										<td className="px-4 sm:px-6 py-3 sm:py-4">
+									<tr key={obj.id}>
+										<td>
 											<div className="text-sm text-neutral-800 line-clamp-2 font-medium">{obj.topic}</div>
 										</td>
-										<td className="px-4 sm:px-6 py-3 sm:py-4">
+										<td>
 											{obj.status === 1 && <span className="badge badge-warning">Generating...</span>}
 											{obj.status === 2 && <span className="badge badge-success">Complete</span>}
 											{obj.status === 3 && <span className="badge badge-error">Error</span>}
 										</td>
-										<td className="px-4 sm:px-6 py-3 sm:py-4">
-											<span className="text-xs sm:text-sm text-neutral-500 whitespace-nowrap">
+										<td>
+											<span className="text-xs font-mono text-neutral-600 whitespace-nowrap">
 												{obj.created_at ? formatManilaTime(new Date(obj.created_at)) : 'N/A'}
 											</span>
 										</td>
-										<td className="px-4 sm:px-6 py-3 sm:py-4 text-right">
+										<td className="text-right">
 											<a
 												href={"/details/" + obj.id}
 												className="btn btn-secondary btn-sm"
@@ -160,12 +194,14 @@ export const ArticleList: FC<{ articles: { results: ArticleTypeDB[] } }> = (prop
 						</table>
 
 						{props.articles.results.length === 0 && (
-							<div className="text-center py-16 px-6">
-								<svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-									<path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-								</svg>
-								<h3 className="mt-2 text-lg font-medium text-neutral-800">No articles generated yet</h3>
-								<p className="mt-1 text-sm text-neutral-500">Get started by creating your first educational article.</p>
+							<div className="text-center py-12 px-4 sm:py-16 sm:px-6 bg-white border-3 border-black">
+								<div className="w-16 h-16 mx-auto bg-neutral-100 flex items-center justify-center border-3 border-black shadow-md">
+									<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-neutral-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+										<path strokeLinecap="square" strokeLinejoin="miter" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+									</svg>
+								</div>
+								<h3 className="mt-4 text-lg font-bold text-neutral-800">No articles generated yet</h3>
+								<p className="mt-2 text-neutral-600 max-w-md mx-auto">Get started by creating your first educational article for teachers and educators.</p>
 								<div className="mt-6">
 									<a href="/create" className="btn btn-primary">
 										Create New Article
@@ -186,8 +222,8 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 	return (
 		<div className="container mx-auto max-w-3xl px-4">
 			<div className="flex items-center justify-between mb-6">
-				<h2 className="text-2xl font-semibold text-neutral-900">
-					Generate New Educational Article
+				<h2 className="text-2xl font-bold text-neutral-900">
+					<span className="bg-primary-200 px-2 py-1 inline-block">Generate</span> New Article
 				</h2>
 				<a href="/" className="btn btn-secondary btn-sm flex items-center space-x-1">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -197,30 +233,33 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 				</a>
 			</div>
 			<div className="card">
+				<div className="card-header">
+					<h3 className="card-title">Topic Details</h3>
+				</div>
 				<div className="card-body">
 					<form
 						className="space-y-6"
 						action="/create"
 						method="post"
 					>
-						<div className="space-y-2">
-							<label htmlFor="article-topic" className="block text-sm font-medium text-neutral-700">
-								Article Topic
+						<div className="space-y-3">
+							<label htmlFor="article-topic" className="block text-base font-semibold text-neutral-800">
+								What topic would you like an article about?
 							</label>
 							<textarea
 								id="article-topic"
 								name="topic"
-								className="w-full min-h-24 p-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-base"
+								className="input-neo min-h-32"
 								required={true}
-								placeholder="Enter the topic for the educational article (e.g., 'Effective Classroom Management Strategies for High School', 'Integrating Technology in the Elementary Curriculum', 'Understanding Differentiated Instruction')"
+								placeholder="Enter a specific educational topic (e.g., 'Project-Based Learning Strategies for Middle School Science', 'Effective Formative Assessment Techniques', 'Integrating SEL in High School English')"
 								defaultValue={defaultTopic}
 							></textarea>
-							<p className="text-xs text-neutral-500">Be specific for better results. The AI will research this topic using Google Search.</p>
+							<p className="text-sm text-neutral-600 bg-neutral-100 p-3 border-l-3 border-neutral-300">Be specific about your educational topic. The AI will research using Google Search and write a comprehensive article for K-12 educators.</p>
 						</div>
 
 						<div className="pt-2 flex justify-end">
 							<button type="submit" className="btn btn-primary w-full sm:w-auto">
-								Generate Article
+								Generate Educational Article
 							</button>
 						</div>
 					</form>
@@ -236,74 +275,79 @@ export const ArticleDetails: FC<{ article: ArticleType & { articleHtml: string }
 
 	return (
 		<div className="container mx-auto max-w-4xl px-4">
-			<div className="card">
-				<div className="card-body">
-					{/* Header */}
-					<div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-200">
-						<h3 className="text-lg font-medium text-neutral-500">
-							Educational Article
-						</h3>
-						<a href="/" className="btn btn-secondary btn-sm flex items-center space-x-1">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-								<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
-							</svg>
-							<span>Back to List</span>
-						</a>
-					</div>
+			<div className="mb-6 flex items-center justify-between">
+				<h2 className="text-lg font-bold text-neutral-700 bg-neutral-100 px-3 py-1 border-2 border-neutral-300">
+					Article Details
+				</h2>
+				<a href="/" className="btn btn-secondary btn-sm flex items-center space-x-1">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+						<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+					</svg>
+					<span>Back to List</span>
+				</a>
+			</div>
 
-					{/* Title */}
-					<h1 className="report text-3xl font-bold text-neutral-900 mb-8 text-center">{props.article.topic}</h1>
-
-					{/* Content Area */}
-					<div className="space-y-8">
-						{/* Status 1: Loading State */}
-						{props.article.status === 1 && (
-							<div className="flex flex-col items-center justify-center py-16 px-4 space-y-5 bg-gradient-to-br from-blue-50 to-primary-50 rounded-lg border border-primary-100">
-								{/* Loading indicators */}
-								<div className="flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full">
-									<svg xmlns="http://www.w3.org/2000/svg" className="animate-pulse w-8 h-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-										<path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-									</svg>
-								</div>
-								<h3 className="text-xl font-semibold text-primary-800 text-center">Crafting your article...</h3>
-								<div className="w-full max-w-md bg-white rounded-full h-2.5 mt-2 border border-primary-200 overflow-hidden">
-									<div className="loading-bar bg-primary-500 h-full rounded-full w-[0%] transition-all duration-1000 ease-linear"></div>
-								</div>
-								<div className="text-sm text-primary-700 flex items-center">
-									<svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-										<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-										<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-									</svg>
-									<span id="status-text">Gathering information & writing...</span>
-								</div>
-								<div className="text-xs text-neutral-500 max-w-md text-center mt-3">
-									This usually takes 30-60 seconds. The page will update automatically when ready.
-								</div>
-								<script dangerouslySetInnerHTML={{ // Polling script
-									__html: `
-                                    const loadingBar = document.querySelector('.loading-bar'); let width = 0; const maxWidth = 95; const duration = 60000; const interval = 500; const increment = (maxWidth / (duration / interval));
-                                    const loadingInterval = setInterval(() => { if (width < maxWidth) { width = Math.min(width + increment, maxWidth); if(loadingBar) loadingBar.style.width = width + '%'; } }, interval);
-                                    const articleId = "${props.article.id}"; const statusText = document.getElementById('status-text');
-                                    const pollingInterval = setInterval(async () => { try { const response = await fetch(\`/api/article-status/\${articleId}\`); if (!response.ok) throw new Error('Status check failed'); const data = await response.json(); if (data.completed && data.hasContent) { if (loadingBar) loadingBar.style.width = '100%'; if (statusText) statusText.textContent = 'Article complete! Reloading...'; clearInterval(pollingInterval); clearInterval(loadingInterval); setTimeout(() => { window.location.reload(); }, 1000); } else if (data.status === 3) { if (statusText) statusText.textContent = 'Error generating article. Reloading...'; clearInterval(pollingInterval); clearInterval(loadingInterval); setTimeout(() => { window.location.reload(); }, 1500); } } catch (error) { console.error('Error polling status:', error); } }, 3000);
-                                    window.addEventListener('beforeunload', () => { clearInterval(pollingInterval); clearInterval(loadingInterval); });
-                                    `
-								}}></script>
+			{/* Content Area */}
+			<div className="space-y-8">
+				{/* Status 1: Loading State */}
+				{props.article.status === 1 && (
+					<div className="neo-box bg-white p-8">
+						<div className="flex flex-col items-center justify-center py-12 px-4 space-y-6 text-center">
+							{/* Loading indicator */}
+							<div className="w-20 h-20 bg-primary-500 flex items-center justify-center border-3 border-black shadow-md neo-pulse">
+								<svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="black" strokeWidth={2}>
+									<path strokeLinecap="square" strokeLinejoin="miter" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+								</svg>
 							</div>
-						)}
 
-						{/* Status 2 or 3: Render Parsed HTML */}
-						{(props.article.status === 2 || props.article.status === 3) && (
-							<div
-								className="report prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-primary-600 hover:prose-a:text-primary-700"
-								// Correctly render raw HTML
-								dangerouslySetInnerHTML={{ __html: props.article.articleHtml }}
-							/>
-						)}
+							<h1 className="text-2xl font-bold text-neutral-900">{props.article.topic}</h1>
+
+							<h3 className="text-xl font-bold text-primary-800">Crafting your educational article...</h3>
+
+							<div className="w-full max-w-md mx-auto border-3 border-black bg-white relative h-6 overflow-hidden">
+								<div className="loading-bar bg-primary-500 h-full w-[0%] transition-all duration-1000 ease-linear"></div>
+								<div className="absolute inset-0 border-b border-dashed border-black opacity-30"></div>
+							</div>
+
+							<div className="font-mono bg-primary-100 px-4 py-2 border-2 border-primary-300 flex items-center">
+								<svg className="animate-spin mr-3 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+									<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+									<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+								</svg>
+								<span id="status-text" className="font-medium">Researching & writing your article...</span>
+							</div>
+
+							<div className="max-w-md text-center px-6 py-4 border-2 border-neutral-200 bg-neutral-50">
+								<p className="text-neutral-700">The AI is researching your topic and crafting a comprehensive educational article.</p>
+								<p className="text-sm text-neutral-600 mt-2">This typically takes 30-60 seconds. The page will update automatically when complete.</p>
+							</div>
+						</div>
+						<script dangerouslySetInnerHTML={{ // Polling script
+							__html: `
+							const loadingBar = document.querySelector('.loading-bar'); let width = 0; const maxWidth = 95; const duration = 60000; const interval = 500; const increment = (maxWidth / (duration / interval));
+							const loadingInterval = setInterval(() => { if (width < maxWidth) { width = Math.min(width + increment, maxWidth); if(loadingBar) loadingBar.style.width = width + '%'; } }, interval);
+							const articleId = "${props.article.id}"; const statusText = document.getElementById('status-text');
+							const pollingInterval = setInterval(async () => { try { const response = await fetch(\`/api/article-status/\${articleId}\`); if (!response.ok) throw new Error('Status check failed'); const data = await response.json(); if (data.completed && data.hasContent) { if (loadingBar) loadingBar.style.width = '100%'; if (statusText) statusText.textContent = 'Article complete! Reloading...'; clearInterval(pollingInterval); clearInterval(loadingInterval); setTimeout(() => { window.location.reload(); }, 1000); } else if (data.status === 3) { if (statusText) statusText.textContent = 'Error generating article. Reloading...'; clearInterval(pollingInterval); clearInterval(loadingInterval); setTimeout(() => { window.location.reload(); }, 1500); } } catch (error) { console.error('Error polling status:', error); } }, 3000);
+							window.addEventListener('beforeunload', () => { clearInterval(pollingInterval); clearInterval(loadingInterval); });
+							`
+						}}></script>
+					</div>
+				)}
+
+				{/* Status 2 or 3: Render Article Content */}
+				{(props.article.status === 2 || props.article.status === 3) && (
+					<div className="report">
+						<h1>{props.article.topic}</h1>
+						<div
+							className="prose prose-neutral max-w-none prose-headings:font-bold prose-a:text-primary-600 hover:prose-a:text-primary-700"
+							// Correctly render raw HTML
+							dangerouslySetInnerHTML={{ __html: props.article.articleHtml }}
+						/>
 
 						{/* Status 2: Show Sources */}
 						{props.article.status === 2 && sources.length > 0 && (
 							<div className="sources-section">
-								<h2>Sources</h2>
+								<h2>References</h2>
 								{/* Added className="sources-list" for CSS Counters */}
 								<ol className="sources-list">
 									{sources.map((source, index) => (
@@ -330,7 +374,7 @@ export const ArticleDetails: FC<{ article: ArticleType & { articleHtml: string }
 							</div>
 						)}
 					</div>
-				</div>
+				)}
 			</div>
 		</div>
 	);
@@ -340,11 +384,18 @@ export const ArticleDetails: FC<{ article: ArticleType & { articleHtml: string }
 export const ValidationErrorDisplay: FC<{ errors: string[] }> = (props) => {
 	if (!props.errors || props.errors.length === 0) return null;
 	return (
-		<div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg relative mb-6" role="alert">
-			<strong className="font-semibold">Validation Error!</strong>
-			<ul className="mt-2 list-disc list-inside text-sm">
+		<div className="neo-box bg-error-100 border-error-500 text-error-800 px-5 py-4 mb-6" role="alert">
+			<div className="flex items-center">
+				<div className="bg-error-500 text-white p-2 mr-4 border-2 border-black">
+					<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+						<path strokeLinecap="square" strokeLinejoin="miter" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+					</svg>
+				</div>
+				<strong className="font-bold text-error-800">Validation Error!</strong>
+			</div>
+			<ul className="mt-3 list-disc list-inside text-error-800 border-t-2 border-error-300 pt-3">
 				{props.errors.map((error, index) => (
-					<li key={index}>{error}</li>
+					<li key={index} className="font-medium">{error}</li>
 				))}
 			</ul>
 		</div>
