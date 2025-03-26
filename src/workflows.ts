@@ -89,6 +89,10 @@ export class ArticleWorkflow extends WorkflowEntrypoint<Env, ArticleType> {
 				const model = getModelThinking(this.env);
 				const { text } = await generateText({
 					model,
+					temperature: 0.7,
+					topP: 0.95,
+					topK: 64,
+					maxTokens: 65536,
 					// Pass originalTopic here so AI knows the user's intent, but prompt asks for title based on learnings
 					prompt: WRITE_ARTICLE_PROMPT(originalTopic, finalLearnings, currentDate),
 				});

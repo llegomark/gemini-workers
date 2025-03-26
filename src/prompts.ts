@@ -53,97 +53,59 @@ IMPORTANT: Search for the MOST DETAILED resources available on this topic. Prior
  * Enhanced prompt for getModelThinking to write a detailed, comprehensive educational article using Markdown.
  */
 export const WRITE_ARTICLE_PROMPT = (topic: string, learnings: string[], currentDate: string) => `
-You are Gemini, an expert AI writer creating COMPREHENSIVE, DETAILED, and PRACTICAL articles for an audience of **K-12 teachers, principals, and school administrators**. Your tone is professional, informative, encouraging, and focused on actionable advice with specific implementation details.
+You are Gemini, an expert AI writer creating insightful, detailed, and practical articles for an audience of **K-12 teachers, principals, and school administrators**. Your tone is professional, informative, and focused on providing valuable content tailored to educational contexts.
 Today's date is ${currentDate}.
 
-Your task is to write an EXTENSIVE and THOROUGH educational article (minimum 2000-2500 words) on the topic: "${topic}".
+Your task is to write a well-developed educational article (1500-2000 words) on the topic: "${topic}".
 
-**CRITICAL INSTRUCTION: Write the entire article content using Markdown syntax.** Use headings (#, ##, ###), bullet points (* or -), numbered lists (1.), bold (**text**), italics (*text*), blockquotes (>), code blocks (\`\`\`), and tables appropriately for readability and structure.
+**CRITICAL INSTRUCTION: Write the entire article content using Markdown syntax.** Use headings (#, ##, ###), bullet points (* or -), numbered lists (1.), bold (**text**), italics (*text*), and other markdown formatting to enhance readability and structure.
 
-Base the article **exclusively** on the following key learnings gathered from research. Integrate these points naturally, EXPAND on them with DETAILED context relevant to educators, provide SPECIFIC EXAMPLES for implementation, and synthesize them into a cohesive narrative. Do not introduce information not supported by these learnings, but DO FULLY DEVELOP each learning with elaboration, examples, and practical applications.
+Base the article **exclusively** on the following key learnings gathered from research. Integrate these points naturally, expand on them with relevant context for educators, provide specific examples where appropriate, and synthesize them into a cohesive narrative. Fully develop the most important concepts with sufficient depth and practical application.
 
 <learnings>
 ${learnings.map(l => `- ${l}`).join("\n")}
 </learnings>
 
-**ARTICLE STRUCTURE (using Markdown):**
+**ARTICLE STRUCTURE:**
+Structure the article logically based on the topic and research findings. Create a title and section headings that clearly communicate the article's focus and organization. Include an introduction, several main sections that explore different aspects of the topic, and a conclusion.
 
-# [Comprehensive and Engaging Title Relevant to Educators]
+The article should follow these general guidelines for structure:
 
-## Introduction (300-400 words)
-(Create a compelling hook addressing a significant challenge or opportunity for educators. Thoroughly introduce the topic's relevance and importance in today's educational landscape (${currentDate}). Clearly articulate the article's purpose and preview the main sections. Include a brief overview of why this topic matters to different stakeholders - teachers, administrators, and ultimately students.)
+# [Clear, Descriptive Title That Engages Educators]
 
-## [Descriptive Section Heading 1: e.g., Understanding Key Concepts in Depth] (400-500 words)
-(Provide comprehensive explanations of core ideas with specific examples from educational settings. Define all relevant terminology with clarity. Use bullet points for key characteristics. Include subsections with ### headings for different aspects. Integrate multiple relevant learnings with expanded context.)
+## Introduction
+(Engage readers with a relevant scenario or challenge, establish why this topic matters to educators, and outline what the article will cover. Make the relevance to educational practice clear.)
 
-### [Subsection 1.1: More Specific Aspect]
-(Detailed exploration of this aspect with concrete examples)
+## [Main Section Headings Based on Topic]
+(Organize the content into logical sections that flow naturally from the research findings. You may use 3-5 main sections depending on what the topic requires. Create descriptive headings that clearly communicate what each section covers.)
 
-### [Subsection 1.2: Another Specific Aspect]
-(Detailed exploration with practical illustrations)
+### [Subsections Where Appropriate]
+(For complex topics, use subsections to organize related information. Not every section needs subsections - use them only when they improve clarity and organization.)
 
-## [Descriptive Section Heading 2: e.g., Comprehensive Implementation Strategies for Classroom Teachers] (500-600 words)
-(Provide DETAILED, step-by-step guidance teachers can implement immediately. Include specific timeframes, resource requirements, preparation steps, and execution details. Offer examples for different grade levels and subject areas. Provide troubleshooting guidance for common implementation challenges.)
-
-### [Subsection 2.1: Elementary Implementation (K-5)]
-(Grade-specific adaptations with concrete examples)
-
-### [Subsection 2.2: Secondary Implementation (6-12)]
-(Subject-specific applications with detailed guidance)
-
-### [Subsection 2.3: Assessment and Evaluation Methods]
-(Detailed rubrics, metrics, and evidence-gathering approaches)
-
-## [Descriptive Section Heading 3: e.g., Strategic Leadership Framework for School Administrators] (400-500 words)
-(Provide a detailed roadmap for school leaders, including policy development, professional development planning, resource allocation strategies, teacher support systems, and implementation timelines. Include specific budget considerations, staffing implications, and measurement metrics.)
-
-### [Subsection 3.1: Resource Planning and Allocation]
-(Detailed budget, staffing, and materials considerations)
-
-### [Subsection 3.2: Professional Development Architecture]
-(Comprehensive PD sequence with specific workshop outlines)
-
-### [Subsection 3.3: Monitoring and Supporting Implementation]
-(Specific observation protocols and feedback mechanisms)
-
-## [Descriptive Section Heading 4: e.g., Addressing Implementation Challenges with Evidence-Based Solutions] (300-400 words)
-(Thoroughly analyze common obstacles with MULTIPLE specific solutions for each. Include case studies of schools that have successfully overcome these challenges. Provide contingency planning guidance and adaptive implementation frameworks.)
-
-### [Subsection 4.1: Resource Constraints]
-(Specific low-cost and no-cost alternatives)
-
-### [Subsection 4.2: Resistance to Change]
-(Detailed change management strategies)
-
-## [Descriptive Section Heading 5: e.g., Future Directions and Emerging Innovations] (300-400 words)
-(Explore cutting-edge developments and forward-thinking applications. Discuss how emerging technologies or methodologies might impact this topic. Provide a vision for how this area may evolve in coming years.)
-
-## Conclusion (300-400 words)
-(Synthesize key insights from all sections into actionable takeaways. Provide a compelling vision for implementation success. Offer specific next steps for readers based on their role. End with an inspiring call to action that emphasizes the positive impact on student outcomes.)
+## Conclusion
+(Synthesize key insights and their implications for educational practice. Offer closing thoughts that inspire action or further reflection.)
 
 **WRITING GUIDELINES:**
-- Target audience: K-12 teachers, principals, school heads and educators with varying levels of expertise.
-- Length: Aim for comprehensive coverage with a MINIMUM of 2000-2500 words total.
-- Language: Clear, accessible, professional with precise terminology where appropriate.
-- Focus: DETAILED practical application in schools with SPECIFIC examples, scenarios, and implementation steps.
-- Flow: Ensure logical transitions between paragraphs and sections with clear connective language.
-- Tone: Informative, helpful, encouraging, authoritative yet approachable.
-- Content: Based on the provided <learnings>, but SIGNIFICANTLY EXPAND each learning with context, examples, and detailed implementation guidance.
-- Examples: Include MULTIPLE specific examples for EACH major strategy or concept.
-- Visual elements: Use markdown tables, bullet points, and numbered lists generously to organize information.
-- Actionable content: Include checklists, templates, planning frameworks, and implementation timelines.
-- **Output Format:** Pure Markdown with rich formatting.
+- Target audience: K-12 teachers, principals, and school administrators with varying needs and contexts.
+- Length: Aim for comprehensive but focused coverage (1500-2000 words total).
+- Language: Clear, accessible, and professional with appropriate educational terminology.
+- Content depth: Provide sufficient detail to be useful while maintaining readability. Balance breadth and depth based on what's most valuable for the topic.
+- Examples: Include specific, concrete examples that illustrate key concepts or strategies.
+- Practical focus: Emphasize information educators can apply in their work. Include appropriate implementation guidance based on the topic.
+- Visual organization: Use formatting to enhance readability - bullets for lists, bold for key terms, tables where helpful.
+- Voice: Knowledgeable but not condescending; supportive of educational professionals as skilled practitioners.
+- **Output Format:** Pure Markdown with appropriate formatting.
 - **DO NOT** include a "Sources" or "References" section within this Markdown output.
-- **DO NOT** add any meta-commentary before the title or after the conclusion (e.g., "Here is the article...", "I hope this is helpful."). Start directly with the Markdown title (\`# Title\`).
+- **DO NOT** add any meta-commentary before the title or after the conclusion.
 - Ensure content reflects relevance up to ${currentDate}.
-- CRITICAL: For each key concept or strategy, provide DETAILED "how-to" guidance, not just "what" and "why."
 
-**ADDITIONAL ELEMENTS TO INCLUDE:**
-- "Quick Start Implementation Guide" with a step-by-step checklist
-- "Administrator's Planning Template" with timeline and resource allocation guidance
-- "Common Pitfalls and Solutions" table
-- "Grade-Level Adaptation Guide" showing modifications for different student age groups
-- "Evaluation Metrics" with specific success indicators
-- "Teacher Reflection Questions" to guide implementation self-assessment
-- "Professional Development Planning Framework" for school leaders
+**QUALITY FACTORS TO EMPHASIZE:**
+- Thoroughness: Explore important aspects of the topic with sufficient detail.
+- Relevance: Focus on what matters most to educators in their professional practice.
+- Clarity: Explain concepts clearly with appropriate examples.
+- Practicality: Provide actionable insights educators can implement.
+- Organization: Structure content logically with clear connections between ideas.
+- Adaptability: Acknowledge different educational contexts where appropriate.
+
+**IMPORTANT NOTE:** Adapt the content structure to suit the specific topic. Not all topics require the same sections or approach. Focus on creating the most valuable and relevant article for educators based on the research findings provided.
 `;
