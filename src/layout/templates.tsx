@@ -41,6 +41,7 @@ const TopBar: FC<{ user: string }> = (props) => {
 							</span>
 						</a>
 					</div>
+					{/* Optional: Add user info or other links here */}
 				</div>
 			</div>
 		</header>
@@ -76,6 +77,8 @@ export const Layout: FC<{ title?: string; children: any; user?: string }> = (pro
 				<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet" />
 				<title>{props.title || "Educational Article Generator"}</title>
 				<meta name="description" content="Generate educational articles for educators using AI." />
+				{/* Add Cloudflare Turnstile script - Moved here from individual component */}
+				<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 				<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300b7ff' stroke='black' stroke-width='2'%3E%3Cpath stroke-linecap='square' stroke-linejoin='miter' d='M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25' /%3E%3C/svg%3E" />
 			</head>
 			<body className="bg-neutral-50 min-h-screen flex flex-col">
@@ -293,10 +296,12 @@ export const ArticleList: FC<{
 
 
 // --- CreateArticle Component ---
-export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
+export const CreateArticle: FC<{ sitekey: string; formData?: { topic: string }; error?: string }> = (props) => {
 	const defaultTopic = props.formData?.topic || "";
+	// Use the provided sitekey or fallback to the dummy key if needed (shouldn't happen if passed correctly from index.tsx)
+	const turnstileSiteKey = props.sitekey;
 	return (
-		<div className="container mx-auto max-w-3xl px-4">
+		<div className="container mx-auto max-w-4xl px-3 md:px-4">
 			<div className="flex items-center justify-between mb-6">
 				<h2 className="text-2xl font-bold text-neutral-900">
 					<span className="bg-primary-200 px-2 py-1 inline-block">Generate</span> New Article
@@ -308,6 +313,23 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 					<span>Back to List</span>
 				</a>
 			</div>
+			{/* Display Turnstile validation error if present */}
+			{props.error && (
+				<div className="neo-box bg-error-100 border-error-500 text-error-800 px-5 py-4 mb-6" role="alert">
+					<div className="flex items-center">
+						<div className="bg-error-500 text-white p-2 mr-4 border-2 border-black">
+							{/* Error Icon */}
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+								<path strokeLinecap="square" strokeLinejoin="miter" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+							</svg>
+						</div>
+						<strong className="font-bold text-error-800">Verification Failed</strong>
+					</div>
+					<div className="mt-3 border-t-2 border-error-300 pt-3">
+						<p className="font-medium">{props.error}</p>
+					</div>
+				</div>
+			)}
 			<div className="card">
 				<div className="card-header">
 					<h3 className="card-title">Topic Details</h3>
@@ -370,7 +392,10 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 								required={true}
 								placeholder="Enter a specific educational topic (e.g., 'Project-Based Learning Strategies for Middle School Science', 'Effective Formative Assessment Techniques', 'Integrating SEL in High School English')"
 								defaultValue={defaultTopic}
+								minLength={10} // Basic HTML validation
+								maxLength={500} // Basic HTML validation
 							></textarea>
+							{/* Character counter will be inserted here by JS */}
 							<p className="text-sm text-neutral-600 bg-neutral-100 p-3 border-l-3 border-neutral-300">Be specific about your educational topic. The AI will research using Google Search and write a comprehensive article for K-12 educators.</p>
 
 							<div id="optimization-result" className="hidden mt-2 p-4 border-2 border-primary-400 bg-primary-50">
@@ -384,6 +409,12 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 							</div>
 						</div>
 
+						{/* Add the Turnstile Widget Div */}
+						<div className="pt-2">
+							<label className="block text-sm font-semibold text-neutral-800 mb-2">Verification</label>
+							<div className="cf-turnstile" data-sitekey={turnstileSiteKey}></div>
+						</div>
+
 						<div className="pt-2 flex justify-end">
 							<button type="submit" className="btn btn-primary w-full sm:w-auto">
 								Generate Educational Article
@@ -391,7 +422,7 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 						</div>
 					</form>
 
-					{/* Add client-side JavaScript for the optimize topic and random topic functionality */}
+					{/* Client-side JavaScript for optimize/random topic and char count/validation */}
 					<script dangerouslySetInnerHTML={{
 						__html: `
 						document.addEventListener('DOMContentLoaded', () => {
@@ -402,159 +433,149 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 							const randomSpinner = document.getElementById('random-spinner');
 							const optimizationResult = document.getElementById('optimization-result');
 							const randomResult = document.getElementById('random-result');
-							
-							if (!optimizeBtn || !randomBtn || !topicTextarea || !optimizeSpinner || !randomSpinner || !optimizationResult || !randomResult) return;
-							
-							// Add character counter and validation
+							const articleForm = document.getElementById('article-form'); // Get form element
+
+							if (!optimizeBtn || !randomBtn || !topicTextarea || !optimizeSpinner || !randomSpinner || !optimizationResult || !randomResult || !articleForm) return;
+
+							// Add character counter
 							const charCounter = document.createElement('div');
 							charCounter.className = 'text-xs text-right mt-1 text-neutral-500';
 							charCounter.id = 'char-counter';
 
-							// Insert the counter after the textarea
-							if (topicTextarea) {
+							if (topicTextarea.parentNode) { // Ensure parentNode exists
 								topicTextarea.parentNode.insertBefore(charCounter, topicTextarea.nextSibling);
-								
-								// Update character count on input
-								topicTextarea.addEventListener('input', function() {
-									const currentLength = this.value.length;
+
+								const updateCounter = () => {
+									const currentLength = topicTextarea.value.length;
 									const maxLength = 500; // Match the validation schema
+									const minLength = 10; // Match the validation schema
 									const remainingChars = maxLength - currentLength;
-									
-									// Update the counter
+
 									charCounter.textContent = \`\${currentLength}/\${maxLength} characters\`;
-									
-									// Visual warning when approaching limit
-									if (remainingChars <= 50 && remainingChars > 0) {
+
+									// Remove previous error styles first
+									charCounter.classList.remove('text-orange-500', 'font-medium', 'text-error-600', 'font-bold');
+									charCounter.classList.add('text-neutral-500'); // Default style
+
+									if (currentLength < minLength && currentLength > 0) {
+										charCounter.className = 'text-xs text-right mt-1 text-error-600 font-bold';
+										charCounter.textContent = \`\${currentLength}/\${maxLength} characters (min \${minLength} required)\`;
+									} else if (remainingChars <= 50 && remainingChars >= 0) {
 										charCounter.className = 'text-xs text-right mt-1 text-orange-500 font-medium';
-									} 
-									// Error state when exceeding limit
-									else if (remainingChars < 0) {
+									} else if (remainingChars < 0) {
 										charCounter.className = 'text-xs text-right mt-1 text-error-600 font-bold';
 										charCounter.textContent = \`\${currentLength}/\${maxLength} characters (\${Math.abs(remainingChars)} over limit)\`;
 									}
-									// Normal state
-									else {
-										charCounter.className = 'text-xs text-right mt-1 text-neutral-500';
-									}
-								});
-								
-								// Trigger initial count
-								const event = new Event('input');
-								topicTextarea.dispatchEvent(event);
+								};
+
+								topicTextarea.addEventListener('input', updateCounter);
+								updateCounter(); // Initial count
 							}
 
+
 							// Add form submission validation
-							const articleForm = document.getElementById('article-form');
-							if (articleForm) {
-								articleForm.addEventListener('submit', function(e) {
-									const topic = topicTextarea.value.trim();
-									
-									// Check length
-									if (topic.length > 500) {
-										e.preventDefault();
-										
-										// Show validation error
-										const errorBox = document.createElement('div');
-										errorBox.className = 'mt-2 p-4 border-2 border-error-500 bg-error-50 rounded';
-										errorBox.innerHTML = \`
-											<h4 class="font-bold text-error-700 mb-2">❌ Validation Error!</h4>
-											<p class="text-sm text-neutral-700">topic: Article topic cannot exceed 500 characters. Current length: \${topic.length}</p>
-										\`;
-										
-										// Remove any existing error
-										const existingError = document.querySelector('.bg-error-50.rounded');
-										if (existingError) {
-											existingError.remove();
-										}
-										
-										// Insert error message
-										topicTextarea.parentNode.insertBefore(errorBox, charCounter.nextSibling);
-										
-										// Scroll to error
-										errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-									}
-								});
-							}
+							articleForm.addEventListener('submit', function(e) {
+								const topic = topicTextarea.value.trim();
+								const currentLength = topic.length;
+								const maxLength = 500;
+								const minLength = 10;
+								let validationErrors = [];
+
+								if (currentLength < minLength) {
+									validationErrors.push(\`Topic must be at least \${minLength} characters long. Current length: \${currentLength}\`);
+								}
+								if (currentLength > maxLength) {
+									validationErrors.push(\`Topic cannot exceed \${maxLength} characters. Current length: \${currentLength}\`);
+								}
+
+								// Remove any existing validation error box first
+								const existingErrorBox = articleForm.querySelector('.validation-error-box');
+								if (existingErrorBox) {
+									existingErrorBox.remove();
+								}
+
+								if (validationErrors.length > 0) {
+									e.preventDefault(); // Stop form submission
+
+									const errorBox = document.createElement('div');
+									errorBox.className = 'validation-error-box neo-box bg-error-100 border-error-500 text-error-800 px-5 py-4 mb-6'; // Added class
+									errorBox.role = 'alert';
+									let errorHTML = \`
+										<div class="flex items-center">
+										   <div class="bg-error-500 text-white p-2 mr-4 border-2 border-black">
+											  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+												 <path strokeLinecap="square" strokeLinejoin="miter" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+											  </svg>
+										   </div>
+										   <strong class="font-bold text-error-800">Validation Error!</strong>
+										</div>
+										<ul class="mt-3 list-disc list-inside text-error-800 border-t-2 border-error-300 pt-3">
+									\`;
+									validationErrors.forEach(error => {
+										errorHTML += \`<li class="font-medium">\${error}</li>\`;
+									});
+									errorHTML += '</ul>';
+									errorBox.innerHTML = errorHTML;
+
+									// Insert error message before the form element or specific field
+									articleForm.parentNode.insertBefore(errorBox, articleForm);
+									errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+								}
+							});
+
+
+							const showApiError = (elementToInsertBefore, message) => {
+								const errorBox = document.createElement('div');
+								errorBox.className = 'api-error-box mt-2 p-4 border-2 border-error-500 bg-error-50 rounded';
+								errorBox.innerHTML = \`
+									<h4 class="font-bold text-error-700 mb-2">❌ Error</h4>
+									<p class="text-sm text-neutral-700">\${message}</p>
+								\`;
+								// Remove existing API errors before showing new one
+								const existingApiError = document.querySelector('.api-error-box');
+								if(existingApiError) existingApiError.remove();
+
+								topicTextarea.parentNode.insertBefore(errorBox, elementToInsertBefore);
+								setTimeout(() => { errorBox.remove(); }, 5000);
+							};
+
 
 							// Handle Optimize Topic button
 							optimizeBtn.addEventListener('click', async () => {
 								const topic = topicTextarea.value.trim();
-								
 								if (!topic || topic.length < 5) {
 									alert('Please enter a topic with at least 5 characters to optimize.');
 									return;
 								}
-								
 								try {
-									// Show spinner, disable button
 									optimizeSpinner.classList.remove('hidden');
 									optimizeBtn.disabled = true;
 									optimizationResult.classList.add('hidden');
 									randomResult.classList.add('hidden');
-									
-									// Make API request
-									const response = await fetch('/api/optimize-topic', {
-										method: 'POST',
-										headers: {
-											'Content-Type': 'application/json',
-										},
-										body: JSON.stringify({ topic }),
-									});
-									
-									// Handle rate limiting
+									const response = await fetch('/api/optimize-topic', { /* ... fetch options ... */
+                                        method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ topic }),
+                                    });
 									if (response.status === 429) {
-										const errorData = await response.json();
-										const errorMessage = errorData.error || 'Rate limit exceeded. Please try again in a minute.';
-										
-										// Show rate limit error
-										const errorBox = document.createElement('div');
-										errorBox.className = 'mt-2 p-4 border-2 border-error-500 bg-error-50 rounded';
-										errorBox.innerHTML = \`
-											<h4 class="font-bold text-error-700 mb-2">❌ Rate Limit Exceeded</h4>
-											<p class="text-sm text-neutral-700">\${errorMessage}</p>
-										\`;
-										
-										// Insert after the textarea
-										topicTextarea.parentNode.insertBefore(errorBox, optimizationResult);
-										
-										// Remove after 5 seconds
-										setTimeout(() => {
-											errorBox.remove();
-										}, 5000);
-										
-										// Do NOT clear the textarea - original text is retained
-										throw new Error(errorMessage);
-									}
-									
-									if (!response.ok) {
-										const errorData = await response.json();
-										throw new Error(errorData.error || 'Failed to optimize topic');
-									}
-									
+                                        const errorData = await response.json();
+										showApiError(optimizationResult, errorData.error || 'Rate limit exceeded. Please try again in a minute.');
+										throw new Error('Rate limit exceeded'); // Prevent further processing
+                                    }
+									if (!response.ok) throw new Error((await response.json()).error || 'Failed to optimize topic');
 									const data = await response.json();
-									
-									// Update textarea with optimized topic
 									if (data.optimizedTopic) {
 										topicTextarea.value = data.optimizedTopic;
 										optimizationResult.classList.remove('hidden');
 										randomResult.classList.add('hidden');
-										
-										// Briefly highlight the textarea
 										topicTextarea.classList.add('bg-primary-50', 'border-primary-500');
-										setTimeout(() => {
-											topicTextarea.classList.remove('bg-primary-50', 'border-primary-500');
-										}, 1500);
-										
-										// Update character count
-										topicTextarea.dispatchEvent(new Event('input'));
+										setTimeout(() => { topicTextarea.classList.remove('bg-primary-50', 'border-primary-500'); }, 1500);
+										topicTextarea.dispatchEvent(new Event('input')); // Update counter
 									}
 								} catch (error) {
 									console.error('Error optimizing topic:', error);
 									if (!error.message.includes('Rate limit exceeded')) {
-										alert('Failed to optimize topic: ' + (error.message || 'Unknown error'));
+										showApiError(optimizationResult, 'Failed to optimize topic: ' + (error.message || 'Unknown error'));
 									}
 								} finally {
-									// Hide spinner, re-enable button
 									optimizeSpinner.classList.add('hidden');
 									optimizeBtn.disabled = false;
 								}
@@ -563,74 +584,34 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 							// Handle Random Topic button
 							randomBtn.addEventListener('click', async () => {
 								try {
-									// Show spinner, disable button
 									randomSpinner.classList.remove('hidden');
 									randomBtn.disabled = true;
 									randomResult.classList.add('hidden');
 									optimizationResult.classList.add('hidden');
-									
-									// Make API request
-									const response = await fetch('/api/random-topic', {
-										method: 'POST',
-										headers: {
-											'Content-Type': 'application/json',
-										}
-									});
-									
-									// Handle rate limiting
+									const response = await fetch('/api/random-topic', { /* ... fetch options ... */
+                                        method: 'POST', headers: { 'Content-Type': 'application/json', }
+                                    });
 									if (response.status === 429) {
-										const errorData = await response.json();
-										const errorMessage = errorData.error || 'Rate limit exceeded. Please try again in a minute.';
-										
-										// Show rate limit error
-										const errorBox = document.createElement('div');
-										errorBox.className = 'mt-2 p-4 border-2 border-error-500 bg-error-50 rounded';
-										errorBox.innerHTML = \`
-											<h4 class="font-bold text-error-700 mb-2">❌ Rate Limit Exceeded</h4>
-											<p class="text-sm text-neutral-700">\${errorMessage}</p>
-										\`;
-										
-										// Insert after the textarea
-										topicTextarea.parentNode.insertBefore(errorBox, randomResult);
-										
-										// Remove after 5 seconds
-										setTimeout(() => {
-											errorBox.remove();
-										}, 5000);
-										
-										// Do NOT clear the textarea - original text is retained
-										throw new Error(errorMessage);
-									}
-									
-									if (!response.ok) {
-										const errorData = await response.json();
-										throw new Error(errorData.error || 'Failed to generate random topic');
-									}
-									
+                                        const errorData = await response.json();
+										showApiError(randomResult, errorData.error || 'Rate limit exceeded. Please try again in a minute.');
+										throw new Error('Rate limit exceeded'); // Prevent further processing
+                                    }
+									if (!response.ok) throw new Error((await response.json()).error || 'Failed to generate random topic');
 									const data = await response.json();
-									
-									// Update textarea with random topic
 									if (data.randomTopic) {
 										topicTextarea.value = data.randomTopic;
 										randomResult.classList.remove('hidden');
 										optimizationResult.classList.add('hidden');
-										
-										// Briefly highlight the textarea
 										topicTextarea.classList.add('bg-secondary-50', 'border-secondary-500');
-										setTimeout(() => {
-											topicTextarea.classList.remove('bg-secondary-50', 'border-secondary-500');
-										}, 1500);
-										
-										// Update character count
-										topicTextarea.dispatchEvent(new Event('input'));
+										setTimeout(() => { topicTextarea.classList.remove('bg-secondary-50', 'border-secondary-500'); }, 1500);
+										topicTextarea.dispatchEvent(new Event('input')); // Update counter
 									}
 								} catch (error) {
 									console.error('Error generating random topic:', error);
 									if (!error.message.includes('Rate limit exceeded')) {
-										alert('Failed to generate random topic: ' + (error.message || 'Unknown error'));
+										showApiError(randomResult, 'Failed to generate random topic: ' + (error.message || 'Unknown error'));
 									}
 								} finally {
-									// Hide spinner, re-enable button
 									randomSpinner.classList.add('hidden');
 									randomBtn.disabled = false;
 								}
@@ -655,14 +636,14 @@ export const ArticleDetails: FC<{ article: ArticleType & { articleHtml: string }
 					Article Details
 				</h2>
 				<div className="flex gap-2">
-					{/* Copy Button - Only show for completed articles */}
-					{props.article.status === 2 && props.article.content && (
+					{/* Copy Button - Only show for completed articles with content */}
+					{props.article.status === 2 && props.article.content && props.article.content.trim() !== '' && (
 						<button
 							id="copy-markdown-btn"
 							className="btn btn-primary btn-sm flex items-center space-x-1"
 							title="Copy article in Markdown format"
 							type="button"
-							data-content={props.article.content}
+							data-content={props.article.content} /* Store raw markdown here */
 						>
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
 								<path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
@@ -720,7 +701,8 @@ export const ArticleDetails: FC<{ article: ArticleType & { articleHtml: string }
 							const loadingBar = document.querySelector('.loading-bar'); let width = 0; const maxWidth = 95; const duration = 60000; const interval = 500; const increment = (maxWidth / (duration / interval));
 							const loadingInterval = setInterval(() => { if (width < maxWidth) { width = Math.min(width + increment, maxWidth); if(loadingBar) loadingBar.style.width = width + '%'; } }, interval);
 							const articleId = "${props.article.id}"; const statusText = document.getElementById('status-text');
-							const pollingInterval = setInterval(async () => { try { const response = await fetch(\`/api/article-status/\${articleId}\`); if (!response.ok) throw new Error('Status check failed'); const data = await response.json(); if (data.completed && data.hasContent) { if (loadingBar) loadingBar.style.width = '100%'; if (statusText) statusText.textContent = 'Article complete! Reloading...'; clearInterval(pollingInterval); clearInterval(loadingInterval); setTimeout(() => { window.location.reload(); }, 1000); } else if (data.status === 3) { if (statusText) statusText.textContent = 'Error generating article. Reloading...'; clearInterval(pollingInterval); clearInterval(loadingInterval); setTimeout(() => { window.location.reload(); }, 1500); } } catch (error) { console.error('Error polling status:', error); } }, 3000);
+							const pollingInterval = setInterval(async () => { try { const response = await fetch(\`/api/article-status/\${articleId}\`); if (!response.ok) throw new Error('Status check failed'); const data = await response.json(); if (data.completed && data.hasContent) { if (loadingBar) loadingBar.style.width = '100%'; if (statusText) statusText.textContent = 'Article complete! Reloading...'; clearInterval(pollingInterval); clearInterval(loadingInterval); setTimeout(() => { window.location.reload(); }, 1000); } else if (data.status === 3) { if (statusText) statusText.textContent = 'Error generating article. Reloading...'; clearInterval(pollingInterval); clearInterval(loadingInterval); setTimeout(() => { window.location.reload(); }, 1500); } } catch (error) { console.error('Error polling status:', error); /* Consider stopping polling on repeated errors */ } }, 3000); /* Check every 3 seconds */
+							// Clear intervals when the page is left to avoid background polling
 							window.addEventListener('beforeunload', () => { clearInterval(pollingInterval); clearInterval(loadingInterval); });
 							`
 						}}></script>
@@ -730,14 +712,15 @@ export const ArticleDetails: FC<{ article: ArticleType & { articleHtml: string }
 				{/* Status 2 or 3: Render Article Content */}
 				{(props.article.status === 2 || props.article.status === 3) && (
 					<div className="report">
+						{/* Render Title */}
 						<h1>{props.article.topic}</h1>
+						{/* Render Parsed HTML Content */}
 						<div
 							className="prose prose-neutral max-w-none prose-headings:font-bold prose-a:text-primary-600 hover:prose-a:text-primary-700"
-							// Correctly render raw HTML
 							dangerouslySetInnerHTML={{ __html: props.article.articleHtml }}
 						/>
 
-						{/* Status 2: Show Sources */}
+						{/* Status 2: Show Sources if available and article is complete */}
 						{props.article.status === 2 && sources.length > 0 && (
 							<div className="sources-section">
 								<h2>References</h2>
@@ -754,7 +737,7 @@ export const ArticleDetails: FC<{ article: ArticleType & { articleHtml: string }
 											>
 												{/* Display Title */}
 												<span className="source-title">
-													{source.title || "Source Link"}
+													{source.title || "Source Link"} {/* Fallback title */}
 												</span>
 												{/* Display Full URL */}
 												<span className="text-xs text-primary-600 group-hover:text-primary-700 group-hover:underline block truncate">
@@ -766,31 +749,43 @@ export const ArticleDetails: FC<{ article: ArticleType & { articleHtml: string }
 								</ol>
 							</div>
 						)}
+						{/* Optional: Add message if status is 2 but no sources */}
+						{props.article.status === 2 && sources.length === 0 && (
+							<div className="mt-8 p-4 bg-neutral-100 border-2 border-neutral-300 text-center text-neutral-600">
+								No external sources were cited for this article.
+							</div>
+						)}
+						{/* Status 3: Indicate error if content was error message */}
+						{props.article.status === 3 && (
+							<div className="mt-8 p-4 bg-error-100 border-2 border-error-500 text-center text-error-800 font-semibold">
+								An error occurred during article generation. The content above may be incomplete or show error details.
+							</div>
+						)}
 					</div>
 				)}
 			</div>
 
-			{/* Add JavaScript for copy functionality */}
-			{props.article.status === 2 && props.article.content && (
+			{/* JavaScript for copy functionality - Only include if status is 2 and content exists */}
+			{props.article.status === 2 && props.article.content && props.article.content.trim() !== '' && (
 				<script dangerouslySetInnerHTML={{
 					__html: `
 					document.addEventListener('DOMContentLoaded', () => {
 						const copyBtn = document.getElementById('copy-markdown-btn');
 						const copyBtnText = document.getElementById('copy-btn-text');
-						
+
 						if (!copyBtn || !copyBtnText) return;
-						
+
 						copyBtn.addEventListener('click', async () => {
 							try {
 								const content = copyBtn.getAttribute('data-content');
 								if (!content) throw new Error('No content to copy');
-								
+
 								await navigator.clipboard.writeText(content);
-								
+
 								// Show success message
 								copyBtnText.textContent = 'Copied!';
-								copyBtn.classList.add('bg-secondary-500');
-								
+								copyBtn.classList.add('bg-secondary-500'); // Use a success color class if defined
+
 								// Reset after 2 seconds
 								setTimeout(() => {
 									copyBtnText.textContent = 'Copy';
@@ -798,11 +793,15 @@ export const ArticleDetails: FC<{ article: ArticleType & { articleHtml: string }
 								}, 2000);
 							} catch (err) {
 								console.error('Failed to copy content:', err);
-								
+
 								// Show error message
 								copyBtnText.textContent = 'Copy Failed';
+                                // Optionally add an error class
+								// copyBtn.classList.add('bg-error-500');
+
 								setTimeout(() => {
 									copyBtnText.textContent = 'Copy';
+                                    // copyBtn.classList.remove('bg-error-500');
 								}, 2000);
 							}
 						});

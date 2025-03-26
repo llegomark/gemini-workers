@@ -11,6 +11,8 @@ export type Env = {
 	AI_GATEWAY_API_KEY?: string;
 	ARTICLE_RATE_LIMITER: RateLimiter; // Rate limiter for article creation
 	OPTIMIZE_RATE_LIMITER: RateLimiter; // Rate limiter for topic optimization
+	TURNSTILE_SITE_KEY: string;
+	TURNSTILE_SECRET_KEY: string;
 };
 
 // Add RateLimiter type
