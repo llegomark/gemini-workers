@@ -1,3 +1,5 @@
+// File: src/layout/templates.tsx
+
 import { html } from "hono/html";
 import type { FC } from "hono/jsx";
 import type { ArticleType, ArticleTypeDB, Source } from "../types";
@@ -87,10 +89,65 @@ export const Layout: FC<{ title?: string; children: any; user?: string }> = (pro
 	);
 };
 
-// --- ArticleList Component ---
-export const ArticleList: FC<{ articles: { results: ArticleTypeDB[] } }> = (props) => {
+// --- PaginationControls Component ---
+const PaginationControls: FC<{ currentPage: number, hasNextPage: boolean, hasPreviousPage: boolean }> = (props) => {
+	return (
+		<div className="flex items-center justify-between mt-6 px-4 sm:px-5">
+			{/* Previous Button */}
+			{props.hasPreviousPage ? (
+				<a href={`/?page=${props.currentPage - 1}`} className="btn btn-secondary btn-sm flex items-center space-x-1">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+						<path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+					</svg>
+					<span>Previous</span>
+				</a>
+			) : (
+				<span className="btn btn-secondary btn-sm flex items-center space-x-1 opacity-50 pointer-events-none">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+						<path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+					</svg>
+					<span>Previous</span>
+				</span>
+			)}
+
+			{/* Page Indicator */}
+			<span className="text-sm font-medium text-neutral-700">
+				Page {props.currentPage}
+			</span>
+
+			{/* Next Button */}
+			{props.hasNextPage ? (
+				<a href={`/?page=${props.currentPage + 1}`} className="btn btn-secondary btn-sm flex items-center space-x-1">
+					<span>Next</span>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+						<path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+					</svg>
+				</a>
+			) : (
+				<span className="btn btn-secondary btn-sm flex items-center space-x-1 opacity-50 pointer-events-none">
+					<span>Next</span>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+						<path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+					</svg>
+				</span>
+			)}
+		</div>
+	);
+};
+
+// --- ArticleList Component (Updated Props) ---
+export const ArticleList: FC<{
+	articles: { results: ArticleTypeDB[] };
+	currentPage: number;
+	hasNextPage: boolean;
+	hasPreviousPage: boolean;
+}> = (props) => {
+	// Determine if pagination controls should be shown
+	const showPagination = props.articles.results.length > 0 && (props.hasNextPage || props.hasPreviousPage);
+
 	return (
 		<div className="container mx-auto max-w-4xl px-3 md:px-4">
+			{/* Info Box */}
 			<div className="neo-box bg-accent-100 mb-6 md:mb-8 p-4 md:p-5">
 				<div className="flex flex-col sm:flex-row">
 					<div className="flex-shrink-0 mb-3 sm:mb-0 sm:mr-4">
@@ -109,8 +166,10 @@ export const ArticleList: FC<{ articles: { results: ArticleTypeDB[] } }> = (prop
 				</div>
 			</div>
 
+			{/* Article List Card */}
 			<div className="card">
 				<div className="p-0">
+					{/* Card Header */}
 					<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-0 p-4 sm:p-5 border-b-3 border-black bg-neutral-100">
 						<h2 className="text-xl sm:text-2xl font-bold text-neutral-900">
 							Generated Articles
@@ -126,10 +185,10 @@ export const ArticleList: FC<{ articles: { results: ArticleTypeDB[] } }> = (prop
 						</a>
 					</div>
 
-					{/* Mobile-first layout - Cards for small screens, table for larger screens */}
-					<div className="md:hidden">
+					{/* Mobile Card List */}
+					<div className="md:hidden divide-y-3 divide-black border-b-3 border-black">
 						{props.articles.results.map((obj) => (
-							<div key={obj.id} className="mb-4 bg-white border-3 border-black p-4 shadow-md">
+							<div key={obj.id} className="bg-white p-4">
 								<div className="flex justify-between items-start mb-3">
 									<h3 className="text-base font-bold line-clamp-2 pr-2">{obj.topic}</h3>
 									{obj.status === 1 && <span className="badge badge-warning shrink-0">Generating...</span>}
@@ -153,8 +212,8 @@ export const ArticleList: FC<{ articles: { results: ArticleTypeDB[] } }> = (prop
 						))}
 					</div>
 
-					{/* Table layout for medium screens and up */}
-					<div className="hidden md:block overflow-hidden">
+					{/* Desktop Table List */}
+					<div className="hidden md:block overflow-x-auto">
 						<table className="table-neo">
 							<thead>
 								<tr>
@@ -192,29 +251,46 @@ export const ArticleList: FC<{ articles: { results: ArticleTypeDB[] } }> = (prop
 								))}
 							</tbody>
 						</table>
+					</div>
 
-						{props.articles.results.length === 0 && (
-							<div className="text-center py-12 px-4 sm:py-16 sm:px-6 bg-white border-3 border-black">
-								<div className="w-16 h-16 mx-auto bg-neutral-100 flex items-center justify-center border-3 border-black shadow-md">
-									<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-neutral-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-										<path strokeLinecap="square" strokeLinejoin="miter" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-									</svg>
-								</div>
-								<h3 className="mt-4 text-lg font-bold text-neutral-800">No articles generated yet</h3>
-								<p className="mt-2 text-neutral-600 max-w-md mx-auto">Get started by creating your first educational article for teachers and educators.</p>
+					{/* Empty State */}
+					{props.articles.results.length === 0 && (
+						<div className="text-center py-12 px-4 sm:py-16 sm:px-6 bg-white border-t-3 border-black">
+							<div className="w-16 h-16 mx-auto bg-neutral-100 flex items-center justify-center border-3 border-black shadow-md">
+								<svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-neutral-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+									<path strokeLinecap="square" strokeLinejoin="miter" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+								</svg>
+							</div>
+							<h3 className="mt-4 text-lg font-bold text-neutral-800">No articles found</h3>
+							<p className="mt-2 text-neutral-600 max-w-md mx-auto">
+								{props.currentPage > 1 ? "There are no articles on this page." : "Get started by creating your first educational article."}
+							</p>
+							{props.currentPage <= 1 && (
 								<div className="mt-6">
 									<a href="/create" className="btn btn-primary">
 										Create New Article
 									</a>
 								</div>
-							</div>
-						)}
-					</div>
+							)}
+						</div>
+					)}
+
+					{/* Pagination Controls */}
+					{showPagination && (
+						<div className="border-t-3 border-black py-4 bg-neutral-50">
+							<PaginationControls
+								currentPage={props.currentPage}
+								hasNextPage={props.hasNextPage}
+								hasPreviousPage={props.hasPreviousPage}
+							/>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>
 	);
 };
+
 
 // --- CreateArticle Component ---
 export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {

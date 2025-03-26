@@ -1,3 +1,5 @@
+// File: src/index.tsx
+// ... (imports remain the same) ...
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { D1QB } from "workers-qb";
@@ -22,6 +24,8 @@ export { ArticleWorkflow } from "./workflows";
 
 export const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
+const ARTICLES_PER_PAGE = 10; // Define how many articles per page
+
 // Middleware to set user
 app.use("*", async (c, next) => {
 	if (!c.get("user")) c.set("user", "unknown");
@@ -30,30 +34,64 @@ app.use("*", async (c, next) => {
 
 // --- Routes ---
 
-// GET / - List Articles
+// GET / - List Articles (with Pagination)
 app.get("/", async (c) => {
 	const qb = new D1QB(c.env.DB);
+
+	// --- Pagination Logic ---
+	const pageQuery = c.req.query("page");
+	let page = parseInt(pageQuery || "1", 10);
+	if (isNaN(page) || page < 1) {
+		page = 1; // Default to page 1 if invalid
+	}
+	const offset = (page - 1) * ARTICLES_PER_PAGE;
+	// --- End Pagination Logic ---
+
+	// Fetch one extra item to check if there's a next page
 	const articlesResult = await qb
 		.select<ArticleTypeDB>("articles")
 		.orderBy("created_at desc")
-		.limit(50)
+		.limit(ARTICLES_PER_PAGE + 1) // Fetch one extra
+		.offset(offset)
 		.all();
 
-	const articlesProps = {
-		results: articlesResult?.results ?? [],
-	};
-
-	if (!Array.isArray(articlesProps.results)) {
+	// Check if results are valid
+	if (!articlesResult?.results || !Array.isArray(articlesResult.results)) {
 		console.error("[Index] D1 query result format unexpected. Expected .results to be an array.", articlesResult);
-		articlesProps.results = [];
+		// Render page with error or empty state? For now, show empty.
+		return c.html(
+			<Layout user={c.get("user")} title="Generated Articles">
+				<ArticleList
+					articles={{ results: [] }}
+					currentPage={1}
+					hasNextPage={false}
+					hasPreviousPage={false}
+				/>
+			</Layout>,
+		);
 	}
+
+	// Determine pagination status
+	const hasNextPage = articlesResult.results.length > ARTICLES_PER_PAGE;
+	const articlesForPage = hasNextPage ? articlesResult.results.slice(0, ARTICLES_PER_PAGE) : articlesResult.results;
+	const hasPreviousPage = page > 1;
+
+	const articlesProps = {
+		results: articlesForPage,
+	};
 
 	return c.html(
 		<Layout user={c.get("user")} title="Generated Articles">
-			<ArticleList articles={articlesProps} />
+			<ArticleList
+				articles={articlesProps}
+				currentPage={page}
+				hasNextPage={hasNextPage}
+				hasPreviousPage={hasPreviousPage}
+			/>
 		</Layout>,
 	);
 });
+
 
 // GET /create - Show Article Creation Form
 app.get("/create", async (c) => {
