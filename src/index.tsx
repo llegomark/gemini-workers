@@ -9,6 +9,7 @@ import {
 	CreateArticle,
 	ArticleDetails,
 	ValidationErrorDisplay,
+	RateLimitErrorDisplay,
 } from "./layout/templates";
 import type { ArticleType, ArticleTypeDB, Source } from "./types";
 import { articleSchema } from "./validation";
@@ -63,8 +64,32 @@ app.get("/create", async (c) => {
 	);
 });
 
-// POST /create - Handle Article Creation
+// POST /create - Handle Article Creation with IP-based Rate Limiting
 app.post("/create", async (c) => {
+	// Get client IP for rate limiting
+	const clientIP = c.req.header('cf-connecting-ip') ||
+		c.req.header('x-forwarded-for') ||
+		c.req.header('x-real-ip') ||
+		'unknown';
+
+	// Log which IP we're using for rate limiting
+	console.log(`[Rate Limit] Using IP for article creation: ${clientIP}`);
+
+	// Apply rate limiting based only on IP
+	const rateLimitResult = await c.env.ARTICLE_RATE_LIMITER.limit({ key: clientIP });
+	if (!rateLimitResult.success) {
+		console.log(`[Rate Limit] Rate limit exceeded for article creation by IP: ${clientIP}`);
+		return c.html(
+			<Layout user={c.get("user")} title="Create New Article - Rate Limited">
+				<div className="container mx-auto max-w-3xl px-4">
+					<RateLimitErrorDisplay message="You've reached the article creation limit. Please try again in a minute." />
+					<CreateArticle formData={{ topic: "" }} />
+				</div>
+			</Layout>,
+			429
+		);
+	}
+
 	const form = await c.req.formData();
 	const topic = form.get("topic") as string;
 
@@ -79,8 +104,8 @@ app.post("/create", async (c) => {
 			<Layout user={c.get("user")} title="Create New Article - Error">
 				<div className="container mx-auto max-w-3xl px-4">
 					<ValidationErrorDisplay errors={errorMessages} />
+					<CreateArticle formData={{ topic }} />
 				</div>
-				<CreateArticle formData={{ topic }} />
 			</Layout>,
 			400
 		);
@@ -88,18 +113,18 @@ app.post("/create", async (c) => {
 
 	const validatedData = validationResult.data;
 	const id = crypto.randomUUID();
-	const user = c.get("user");
+	const userId = c.get("user");
 
 	const articleData: ArticleType = {
 		id,
-		topic: validatedData.topic, // Pass original topic to workflow
+		topic: validatedData.topic,
 		status: 1,
-		user: user,
+		user: userId,
 	};
 
 	const articleDataDB: Omit<ArticleTypeDB, 'created_at'> = {
 		id: articleData.id,
-		topic: articleData.topic, // Store original topic initially
+		topic: articleData.topic,
 		status: articleData.status,
 		user: articleData.user,
 		content: null,
@@ -250,9 +275,27 @@ app.get("/api/article-status/:id", async (c) => {
 	});
 });
 
-// POST /api/optimize-topic - Optimize an article topic
+// POST /api/optimize-topic - Optimize an article topic with IP-based Rate Limiting
 app.post("/api/optimize-topic", async (c) => {
 	try {
+		// Get client IP for rate limiting with multiple fallbacks
+		const clientIP = c.req.header('cf-connecting-ip') ||
+			c.req.header('x-forwarded-for') ||
+			c.req.header('x-real-ip') ||
+			'unknown';
+
+		// Log which IP we're using for rate limiting
+		console.log(`[Rate Limit] Using IP for topic optimization: ${clientIP}`);
+
+		// Apply rate limiting based only on IP
+		const rateLimitResult = await c.env.OPTIMIZE_RATE_LIMITER.limit({ key: clientIP });
+		if (!rateLimitResult.success) {
+			console.log(`[Rate Limit] Rate limit exceeded for topic optimization by IP: ${clientIP}`);
+			return c.json({
+				error: "Rate limit exceeded. Please try again in a minute."
+			}, 429);
+		}
+
 		const { topic } = await c.req.json();
 
 		if (!topic || typeof topic !== "string" || topic.trim().length < 5) {

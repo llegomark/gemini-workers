@@ -1,15 +1,21 @@
 import type { Context } from "hono";
 import type { ArticleType } from "./types";
 
-// Remove BROWSER, update Workflow type
+// Update Env type to include rate limiters
 export type Env = {
-	ARTICLE_WORKFLOW: Workflow<ArticleType>; // Changed workflow name and type
+	ARTICLE_WORKFLOW: Workflow<ArticleType>;
 	DB: D1Database;
 	GOOGLE_API_KEY: string;
 	AI_GATEWAY_NAME?: string;
 	AI_GATEWAY_ACCOUNT_ID?: string;
 	AI_GATEWAY_API_KEY?: string;
-	// BROWSER removed
+	ARTICLE_RATE_LIMITER: RateLimiter; // Rate limiter for article creation
+	OPTIMIZE_RATE_LIMITER: RateLimiter; // Rate limiter for topic optimization
+};
+
+// Add RateLimiter type
+export type RateLimiter = {
+	limit(options: { key: string }): Promise<{ success: boolean }>;
 };
 
 export type Variables = {

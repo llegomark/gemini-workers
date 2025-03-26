@@ -293,65 +293,91 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 					{/* Add client-side JavaScript for the optimize topic functionality */}
 					<script dangerouslySetInnerHTML={{
 						__html: `
-						document.addEventListener('DOMContentLoaded', () => {
-							const optimizeBtn = document.getElementById('optimize-topic-btn');
-							const topicTextarea = document.getElementById('article-topic');
-							const spinner = document.getElementById('optimize-spinner');
-							const resultBox = document.getElementById('optimization-result');
-							
-							if (!optimizeBtn || !topicTextarea || !spinner || !resultBox) return;
-							
-							optimizeBtn.addEventListener('click', async () => {
-								const topic = topicTextarea.value.trim();
-								
-								if (!topic || topic.length < 5) {
-									alert('Please enter a topic with at least 5 characters to optimize.');
-									return;
-								}
-								
-								try {
-									// Show spinner, disable button
-									spinner.classList.remove('hidden');
-									optimizeBtn.disabled = true;
-									resultBox.classList.add('hidden');
-									
-									// Make API request
-									const response = await fetch('/api/optimize-topic', {
-										method: 'POST',
-										headers: {
-											'Content-Type': 'application/json',
-										},
-										body: JSON.stringify({ topic }),
-									});
-									
-									if (!response.ok) {
-										const errorData = await response.json();
-										throw new Error(errorData.error || 'Failed to optimize topic');
-									}
-									
-									const data = await response.json();
-									
-									// Update textarea with optimized topic
-									if (data.optimizedTopic) {
-										topicTextarea.value = data.optimizedTopic;
-										resultBox.classList.remove('hidden');
-										
-										// Briefly highlight the textarea
-										topicTextarea.classList.add('bg-primary-50', 'border-primary-500');
-										setTimeout(() => {
-											topicTextarea.classList.remove('bg-primary-50', 'border-primary-500');
-										}, 1500);
-									}
-								} catch (error) {
-									console.error('Error optimizing topic:', error);
-									alert('Failed to optimize topic: ' + (error.message || 'Unknown error'));
-								} finally {
-									// Hide spinner, re-enable button
-									spinner.classList.add('hidden');
-									optimizeBtn.disabled = false;
-								}
-							});
-						});
+	document.addEventListener('DOMContentLoaded', () => {
+		const optimizeBtn = document.getElementById('optimize-topic-btn');
+		const topicTextarea = document.getElementById('article-topic');
+		const spinner = document.getElementById('optimize-spinner');
+		const resultBox = document.getElementById('optimization-result');
+		
+		if (!optimizeBtn || !topicTextarea || !spinner || !resultBox) return;
+		
+		optimizeBtn.addEventListener('click', async () => {
+			const topic = topicTextarea.value.trim();
+			
+			if (!topic || topic.length < 5) {
+				alert('Please enter a topic with at least 5 characters to optimize.');
+				return;
+			}
+			
+			try {
+				// Show spinner, disable button
+				spinner.classList.remove('hidden');
+				optimizeBtn.disabled = true;
+				resultBox.classList.add('hidden');
+				
+				// Make API request
+				const response = await fetch('/api/optimize-topic', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ topic }),
+				});
+				
+				// Handle rate limiting
+				if (response.status === 429) {
+					const errorData = await response.json();
+					const errorMessage = errorData.error || 'Rate limit exceeded. Please try again in a minute.';
+					
+					// Show rate limit error
+					const errorBox = document.createElement('div');
+					errorBox.className = 'mt-2 p-4 border-2 border-error-500 bg-error-50 rounded';
+					errorBox.innerHTML = \`
+						<h4 class="font-bold text-error-700 mb-2">❌ Rate Limit Exceeded</h4>
+						<p class="text-sm text-neutral-700">\${errorMessage}</p>
+					\`;
+					
+					// Insert after the textarea
+					topicTextarea.parentNode.insertBefore(errorBox, resultBox);
+					
+					// Remove after 5 seconds
+					setTimeout(() => {
+						errorBox.remove();
+					}, 5000);
+					
+					throw new Error(errorMessage);
+				}
+				
+				if (!response.ok) {
+					const errorData = await response.json();
+					throw new Error(errorData.error || 'Failed to optimize topic');
+				}
+				
+				const data = await response.json();
+				
+				// Update textarea with optimized topic
+				if (data.optimizedTopic) {
+					topicTextarea.value = data.optimizedTopic;
+					resultBox.classList.remove('hidden');
+					
+					// Briefly highlight the textarea
+					topicTextarea.classList.add('bg-primary-50', 'border-primary-500');
+					setTimeout(() => {
+						topicTextarea.classList.remove('bg-primary-50', 'border-primary-500');
+					}, 1500);
+				}
+			} catch (error) {
+				console.error('Error optimizing topic:', error);
+				if (!error.message.includes('Rate limit exceeded')) {
+					alert('Failed to optimize topic: ' + (error.message || 'Unknown error'));
+				}
+			} finally {
+				// Hide spinner, re-enable button
+				spinner.classList.add('hidden');
+				optimizeBtn.disabled = false;
+			}
+		});
+	});
 						`
 					}} />
 				</div>
@@ -548,6 +574,27 @@ export const ValidationErrorDisplay: FC<{ errors: string[] }> = (props) => {
 					<li key={index} className="font-medium">{error}</li>
 				))}
 			</ul>
+		</div>
+	);
+};
+
+// --- RateLimitErrorDisplay Component ---
+export const RateLimitErrorDisplay: FC<{ message?: string }> = (props) => {
+	const defaultMessage = "Rate limit exceeded. Please try again in a minute.";
+	return (
+		<div className="neo-box bg-error-100 border-error-500 text-error-800 px-5 py-4 mb-6" role="alert">
+			<div className="flex items-center">
+				<div className="bg-error-500 text-white p-2 mr-4 border-2 border-black">
+					<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+						<path strokeLinecap="square" strokeLinejoin="miter" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</div>
+				<strong className="font-bold text-error-800">Rate Limit Exceeded</strong>
+			</div>
+			<div className="mt-3 border-t-2 border-error-300 pt-3">
+				<p className="font-medium">{props.message || defaultMessage}</p>
+				<p className="mt-2 text-sm">Our system limits the number of requests to ensure optimal performance for all users.</p>
+			</div>
 		</div>
 	);
 };

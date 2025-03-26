@@ -112,7 +112,7 @@ The article should follow these general guidelines for structure:
 `;
 
 /**
- * Prompt for optimizing an article topic to be more specific and educator-focused
+ * Improved prompt for optimizing an article topic while staying true to the original intent
  */
 export const OPTIMIZE_TOPIC_PROMPT = (topic: string, currentDate: string) => `
 [GOOGLE SEARCH REQUEST] ${topic} for K-12 educators best practices research
@@ -120,29 +120,35 @@ export const OPTIMIZE_TOPIC_PROMPT = (topic: string, currentDate: string) => `
 Today's date is ${currentDate}.
 You are an experienced educational content strategist specializing in refining article topics for K-12 teachers, principals, and school administrators.
 
-Your task is to optimize the following topic idea:
+Your task is to optimize the following topic idea while MAINTAINING ITS CORE INTENT:
 "${topic}"
 
+IMPORTANT: Your optimized topic MUST preserve the essential subject matter of the original topic. Do not change the fundamental focus - only enhance clarity, specificity, and relevance.
+
 Make the topic:
-1. More specific and focused for educators
+1. More specific and focused for educators (but still recognizably about the same subject)
 2. Aligned with current educational trends and research
 3. Actionable and practical for classroom implementation
 4. Clear and compelling
 
 Use real-time Google Search to identify:
-- Current educational terminology for this topic
+- Current educational terminology related to this topic
 - Specific educator pain points related to this topic
 - Target grade levels or subject areas where this topic is most relevant (if applicable)
 - Educational frameworks or methodologies that could be incorporated
 
 RESPONSE FORMAT:
 1. Provide EXACTLY ONE optimized topic title that is between 10-100 characters.
-2. The optimized topic should be written directly, with no introduction or explanation.
-3. Do not use quotation marks or any other formatting around the optimized topic.
-4. Do not include any explanation of why you made the changes.
-5. Return ONLY the optimized topic text, nothing else.
+2. The optimized topic must be an enhanced version of the original, not a completely different topic.
+3. If the original topic is already well-formulated, make only minimal improvements.
+4. The optimized topic should be written directly, with no introduction or explanation.
+5. Do not use quotation marks or any other formatting around the optimized topic.
+6. Return ONLY the optimized topic text, nothing else.
 
-Example:
-If given "Using technology in the classroom" you might return:
-Integrating AI-Powered Adaptive Learning Tools: Evidence-Based Strategies for K-5 Reading Instruction
+Examples:
+Original: "Using technology in the classroom"
+Optimized: Effective Digital Tools for K-12 Classrooms: Implementation Strategies and Best Practices
+
+Original: "Teaching reading comprehension"
+Optimized: Evidence-Based Reading Comprehension Strategies for Elementary Students: Practical Approaches
 `;
