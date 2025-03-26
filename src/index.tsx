@@ -12,6 +12,9 @@ import {
 } from "./layout/templates";
 import type { ArticleType, ArticleTypeDB, Source } from "./types";
 import { articleSchema } from "./validation";
+import { generateText } from "ai";
+import { getSearch } from "./utils";
+import { OPTIMIZE_TOPIC_PROMPT } from "./prompts";
 
 // Import the workflow
 export { ArticleWorkflow } from "./workflows";
@@ -245,6 +248,47 @@ app.get("/api/article-status/:id", async (c) => {
 		completed: resp.results.status === 2 || resp.results.status === 3,
 		hasContent: resp.results.content != null
 	});
+});
+
+// POST /api/optimize-topic - Optimize an article topic
+app.post("/api/optimize-topic", async (c) => {
+	try {
+		const { topic } = await c.req.json();
+
+		if (!topic || typeof topic !== "string" || topic.trim().length < 5) {
+			return c.json({
+				error: "Please provide a topic with at least 5 characters"
+			}, 400);
+		}
+
+		const currentDate = new Date().toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
+
+		console.log(`[API] Optimizing topic: "${topic.substring(0, 50)}..."`);
+
+		const model = getSearch(c.env);
+		const { text } = await generateText({
+			model,
+			prompt: OPTIMIZE_TOPIC_PROMPT(topic, currentDate),
+		});
+
+		// Trim and clean the result
+		const optimizedTopic = text.trim();
+		console.log(`[API] Optimized topic: "${optimizedTopic.substring(0, 50)}..."`);
+
+		return c.json({
+			originalTopic: topic,
+			optimizedTopic: optimizedTopic
+		});
+	} catch (error) {
+		console.error("[API] Error optimizing topic:", error);
+		return c.json({
+			error: "Failed to optimize topic. Please try again."
+		}, 500);
+	}
 });
 
 export default app;

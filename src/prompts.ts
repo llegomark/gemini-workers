@@ -109,3 +109,39 @@ The article should follow these general guidelines for structure:
 
 **IMPORTANT NOTE:** Adapt the content structure to suit the specific topic. Not all topics require the same sections or approach. Focus on creating the most valuable and relevant article for educators based on the research findings provided.
 `;
+
+/**
+ * Prompt for optimizing an article topic to be more specific and educator-focused
+ */
+export const OPTIMIZE_TOPIC_PROMPT = (topic: string, currentDate: string) => `
+[GOOGLE SEARCH REQUEST] ${topic} for K-12 educators best practices research
+
+Today's date is ${currentDate}.
+You are an experienced educational content strategist specializing in refining article topics for K-12 teachers, principals, and school administrators.
+
+Your task is to optimize the following topic idea:
+"${topic}"
+
+Make the topic:
+1. More specific and focused for educators
+2. Aligned with current educational trends and research
+3. Actionable and practical for classroom implementation
+4. Clear and compelling
+
+Use real-time Google Search to identify:
+- Current educational terminology for this topic
+- Specific educator pain points related to this topic
+- Target grade levels or subject areas where this topic is most relevant (if applicable)
+- Educational frameworks or methodologies that could be incorporated
+
+RESPONSE FORMAT:
+1. Provide EXACTLY ONE optimized topic title that is between 10-100 characters.
+2. The optimized topic should be written directly, with no introduction or explanation.
+3. Do not use quotation marks or any other formatting around the optimized topic.
+4. Do not include any explanation of why you made the changes.
+5. Return ONLY the optimized topic text, nothing else.
+
+Example:
+If given "Using technology in the classroom" you might return:
+Integrating AI-Powered Adaptive Learning Tools: Evidence-Based Strategies for K-5 Reading Instruction
+`;

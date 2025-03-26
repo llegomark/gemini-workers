@@ -22,11 +22,11 @@ function ensureAbsoluteUrl(url: string | undefined): string {
 // --- TopBar Component ---
 const TopBar: FC<{ user: string }> = (props) => {
 	return (
-		<header className="bg-white border-b-3 border-black sticky top-0 z-10 shadow-md">
+		<header className="bg-white border-b-3 border-black shadow-md">
 			<div className="container mx-auto max-w-4xl px-4">
 				<div className="flex items-center justify-between h-16">
 					<div className="flex items-center">
-						<a href="/" className="flex items-center space-x-2 text-xl font-bold text-neutral-900 hover:text-primary-600 transition-colors">
+						<a href="/" className="flex items-center space-x-2 text-xl font-bold text-neutral-900 hover:text-neutral-800 transition-colors">
 							{/* Book Icon with Neo Brutalist style */}
 							<div className="w-9 h-9 bg-primary-500 flex items-center justify-center border-2 border-black shadow-sm">
 								<svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="black">
@@ -183,7 +183,7 @@ export const ArticleList: FC<{ articles: { results: ArticleTypeDB[] } }> = (prop
 										<td className="text-right">
 											<a
 												href={"/details/" + obj.id}
-												className="btn btn-secondary btn-sm"
+												className="btn btn-secondary btn-sm text-center min-w-28"
 											>
 												{obj.status === 1 ? "View Progress" : (obj.status === 2 ? "Read Article" : "View Error")}
 											</a>
@@ -227,7 +227,7 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 				</h2>
 				<a href="/" className="btn btn-secondary btn-sm flex items-center space-x-1">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-						<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+						<path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
 					</svg>
 					<span>Back to List</span>
 				</a>
@@ -241,11 +241,32 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 						className="space-y-6"
 						action="/create"
 						method="post"
+						id="article-form"
 					>
 						<div className="space-y-3">
-							<label htmlFor="article-topic" className="block text-base font-semibold text-neutral-800">
-								What topic would you like an article about?
-							</label>
+							<div className="flex items-center justify-between">
+								<label htmlFor="article-topic" className="block text-base font-semibold text-neutral-800">
+									What topic would you like an article about?
+								</label>
+								<button
+									type="button"
+									id="optimize-topic-btn"
+									className="btn btn-secondary btn-sm flex items-center gap-1"
+									title="Let AI suggest improvements to your topic"
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+										<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435Zm4.443 7.728-6.573 6.573a.59.59 0 0 1-.42.174.592.592 0 0 1-.42-.174L.596 8.308a.592.592 0 0 1 0-.84L7.168.896a.592.592 0 0 1 .84 0l6.573 6.573a.592.592 0 0 1-.087.824Z" />
+										<path d="M6.75 6.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm2.75.75a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0ZM8.75 6.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" />
+									</svg>
+									<span>Optimize Topic</span>
+									<span id="optimize-spinner" className="hidden">
+										<svg className="animate-spin h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+											<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+											<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+										</svg>
+									</span>
+								</button>
+							</div>
 							<textarea
 								id="article-topic"
 								name="topic"
@@ -255,6 +276,11 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 								defaultValue={defaultTopic}
 							></textarea>
 							<p className="text-sm text-neutral-600 bg-neutral-100 p-3 border-l-3 border-neutral-300">Be specific about your educational topic. The AI will research using Google Search and write a comprehensive article for K-12 educators.</p>
+
+							<div id="optimization-result" className="hidden mt-2 p-4 border-2 border-primary-400 bg-primary-50">
+								<h4 className="font-bold text-primary-700 mb-2">✨ Topic Optimized!</h4>
+								<p className="text-sm text-neutral-700">The AI has refined your topic to be more specific and educator-focused.</p>
+							</div>
 						</div>
 
 						<div className="pt-2 flex justify-end">
@@ -263,6 +289,71 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 							</button>
 						</div>
 					</form>
+
+					{/* Add client-side JavaScript for the optimize topic functionality */}
+					<script dangerouslySetInnerHTML={{
+						__html: `
+						document.addEventListener('DOMContentLoaded', () => {
+							const optimizeBtn = document.getElementById('optimize-topic-btn');
+							const topicTextarea = document.getElementById('article-topic');
+							const spinner = document.getElementById('optimize-spinner');
+							const resultBox = document.getElementById('optimization-result');
+							
+							if (!optimizeBtn || !topicTextarea || !spinner || !resultBox) return;
+							
+							optimizeBtn.addEventListener('click', async () => {
+								const topic = topicTextarea.value.trim();
+								
+								if (!topic || topic.length < 5) {
+									alert('Please enter a topic with at least 5 characters to optimize.');
+									return;
+								}
+								
+								try {
+									// Show spinner, disable button
+									spinner.classList.remove('hidden');
+									optimizeBtn.disabled = true;
+									resultBox.classList.add('hidden');
+									
+									// Make API request
+									const response = await fetch('/api/optimize-topic', {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json',
+										},
+										body: JSON.stringify({ topic }),
+									});
+									
+									if (!response.ok) {
+										const errorData = await response.json();
+										throw new Error(errorData.error || 'Failed to optimize topic');
+									}
+									
+									const data = await response.json();
+									
+									// Update textarea with optimized topic
+									if (data.optimizedTopic) {
+										topicTextarea.value = data.optimizedTopic;
+										resultBox.classList.remove('hidden');
+										
+										// Briefly highlight the textarea
+										topicTextarea.classList.add('bg-primary-50', 'border-primary-500');
+										setTimeout(() => {
+											topicTextarea.classList.remove('bg-primary-50', 'border-primary-500');
+										}, 1500);
+									}
+								} catch (error) {
+									console.error('Error optimizing topic:', error);
+									alert('Failed to optimize topic: ' + (error.message || 'Unknown error'));
+								} finally {
+									// Hide spinner, re-enable button
+									spinner.classList.add('hidden');
+									optimizeBtn.disabled = false;
+								}
+							});
+						});
+						`
+					}} />
 				</div>
 			</div>
 		</div>
