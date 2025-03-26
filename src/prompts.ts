@@ -89,6 +89,7 @@ The article should follow these general guidelines for structure:
 - Target audience: K-12 teachers, principals, and school administrators with varying needs and contexts.
 - Length: Aim for comprehensive but focused coverage (1500-2000 words total).
 - Language: Clear, accessible, and professional with appropriate educational terminology.
+- Philippines context: When appropriate, incorporate references to the Philippines educational system, policy frameworks (such as K-12 curriculum), local teaching challenges, and culturally relevant examples. Consider Philippines Department of Education (DepEd) initiatives, policies, and priorities where relevant to the topic.
 - Content depth: Provide sufficient detail to be useful while maintaining readability. Balance breadth and depth based on what's most valuable for the topic.
 - Examples: Include specific, concrete examples that illustrate key concepts or strategies.
 - Practical focus: Emphasize information educators can apply in their work. Include appropriate implementation guidance based on the topic.
