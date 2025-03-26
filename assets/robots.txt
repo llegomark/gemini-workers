@@ -1,0 +1,6 @@
+# robots.txt file for saliksik.net
+User-agent: *
+Disallow: /
+
+# Sitemap
+Sitemap: https://saliksik.net/sitemap.xml

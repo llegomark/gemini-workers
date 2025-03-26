@@ -1,0 +1,50 @@
+{
+	"name": "workers-research",
+	"version": "0.0.1",
+	"description": "A Cloudflare Workers implementation of OpenAI's Deep Research agent",
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"files": [
+		"dist",
+		"LICENSE",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format cjs,esm --external cloudflare:workers",
+		"build-css": "npx @tailwindcss/cli -i ./src/layout/index.css -o ./assets/styles.css",
+		"lint": "npx @biomejs/biome check src/ || (npx @biomejs/biome check --write src/; exit 1)"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"author": "Mark Anthony Llego",
+	"license": "MIT",
+	"homepage": "https://github.com/llegomark/gemini-workers",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:llegomark/gemini-workers.git"
+	},
+	"bugs": {
+		"url": "https://github.com/llegomark/gemini-workers/issues"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@cloudflare/vitest-pool-workers": "^0.8.4",
+		"@cloudflare/workers-types": "^4.20250321.0",
+		"@tailwindcss/cli": "^4.0.16",
+		"@types/node": "^22.13.13",
+		"tailwindcss": "^4.0.16",
+		"typescript": "^5.8.2",
+		"vitest": "3.0.9",
+		"wrangler": "^4.4.0"
+	},
+	"dependencies": {
+		"@ai-sdk/google": "^1.2.3",
+		"ai": "^4.2.5",
+		"hono": "^4.7.5",
+		"marked": "^15.0.7",
+		"node-html-markdown": "^1.3.0",
+		"workers-qb": "^1.10.2",
+		"zod": "^3.24.2"
+	}
+}

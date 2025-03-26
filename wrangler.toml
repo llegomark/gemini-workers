@@ -1,0 +1,26 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "gemini-workers"
+main = "src/index.tsx"
+compatibility_date = "2025-01-28"
+compatibility_flags = [ "nodejs_compat" ]
+workers_dev = true
+
+[observability]
+enabled = true
+
+[build]
+command = "npm run build-css"
+watch_dir = "./src"
+
+[assets]
+directory = "./assets"
+
+[[workflows]]
+name = "article-generator-workflow" # New workflow name
+binding = "ARTICLE_WORKFLOW" # Updated binding name
+class_name = "ArticleWorkflow" # Updated class name
+
+[[d1_databases]]
+binding = "DB"
+database_name = "gemini-workers"
+database_id = "7578ba5b-20b1-411a-87d1-3af7f8d72132"
