@@ -329,6 +329,77 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 							
 							if (!optimizeBtn || !randomBtn || !topicTextarea || !optimizeSpinner || !randomSpinner || !optimizationResult || !randomResult) return;
 							
+							// Add character counter and validation
+							const charCounter = document.createElement('div');
+							charCounter.className = 'text-xs text-right mt-1 text-neutral-500';
+							charCounter.id = 'char-counter';
+
+							// Insert the counter after the textarea
+							if (topicTextarea) {
+								topicTextarea.parentNode.insertBefore(charCounter, topicTextarea.nextSibling);
+								
+								// Update character count on input
+								topicTextarea.addEventListener('input', function() {
+									const currentLength = this.value.length;
+									const maxLength = 500; // Match the validation schema
+									const remainingChars = maxLength - currentLength;
+									
+									// Update the counter
+									charCounter.textContent = \`\${currentLength}/\${maxLength} characters\`;
+									
+									// Visual warning when approaching limit
+									if (remainingChars <= 50 && remainingChars > 0) {
+										charCounter.className = 'text-xs text-right mt-1 text-orange-500 font-medium';
+									} 
+									// Error state when exceeding limit
+									else if (remainingChars < 0) {
+										charCounter.className = 'text-xs text-right mt-1 text-error-600 font-bold';
+										charCounter.textContent = \`\${currentLength}/\${maxLength} characters (\${Math.abs(remainingChars)} over limit)\`;
+									}
+									// Normal state
+									else {
+										charCounter.className = 'text-xs text-right mt-1 text-neutral-500';
+									}
+								});
+								
+								// Trigger initial count
+								const event = new Event('input');
+								topicTextarea.dispatchEvent(event);
+							}
+
+							// Add form submission validation
+							const articleForm = document.getElementById('article-form');
+							if (articleForm) {
+								articleForm.addEventListener('submit', function(e) {
+									const topic = topicTextarea.value.trim();
+									
+									// Check length
+									if (topic.length > 500) {
+										e.preventDefault();
+										
+										// Show validation error
+										const errorBox = document.createElement('div');
+										errorBox.className = 'mt-2 p-4 border-2 border-error-500 bg-error-50 rounded';
+										errorBox.innerHTML = \`
+											<h4 class="font-bold text-error-700 mb-2">❌ Validation Error!</h4>
+											<p class="text-sm text-neutral-700">topic: Article topic cannot exceed 500 characters. Current length: \${topic.length}</p>
+										\`;
+										
+										// Remove any existing error
+										const existingError = document.querySelector('.bg-error-50.rounded');
+										if (existingError) {
+											existingError.remove();
+										}
+										
+										// Insert error message
+										topicTextarea.parentNode.insertBefore(errorBox, charCounter.nextSibling);
+										
+										// Scroll to error
+										errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+									}
+								});
+							}
+
 							// Handle Optimize Topic button
 							optimizeBtn.addEventListener('click', async () => {
 								const topic = topicTextarea.value.trim();
@@ -375,6 +446,7 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 											errorBox.remove();
 										}, 5000);
 										
+										// Do NOT clear the textarea - original text is retained
 										throw new Error(errorMessage);
 									}
 									
@@ -396,6 +468,9 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 										setTimeout(() => {
 											topicTextarea.classList.remove('bg-primary-50', 'border-primary-500');
 										}, 1500);
+										
+										// Update character count
+										topicTextarea.dispatchEvent(new Event('input'));
 									}
 								} catch (error) {
 									console.error('Error optimizing topic:', error);
@@ -447,6 +522,7 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 											errorBox.remove();
 										}, 5000);
 										
+										// Do NOT clear the textarea - original text is retained
 										throw new Error(errorMessage);
 									}
 									
@@ -468,6 +544,9 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 										setTimeout(() => {
 											topicTextarea.classList.remove('bg-secondary-50', 'border-secondary-500');
 										}, 1500);
+										
+										// Update character count
+										topicTextarea.dispatchEvent(new Event('input'));
 									}
 								} catch (error) {
 									console.error('Error generating random topic:', error);

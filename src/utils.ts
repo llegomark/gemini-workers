@@ -39,6 +39,11 @@ export function getSearch(env: Env) {
 	});
 }
 
+export function getTopic(env: Env) {
+	const google = getGoogleProvider(env);
+	return google("gemini-2.0-flash-lite");
+}
+
 // Helper function to extract search grounding metadata from the response
 // Enhanced to better align with potential Google AI SDK structures
 export function extractSearchMetadata(providerMetadata?: any): {

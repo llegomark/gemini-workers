@@ -154,9 +154,43 @@ Optimized: Evidence-Based Reading Comprehension Strategies for Elementary Studen
 `;
 
 /**
- * Prompt for generating genuinely random and novel education-related topics for K-12 educators
+ * Prompt for generating random education-related topics for K-12 educators
  */
 export const RANDOM_TOPIC_PROMPT = (currentDate: string) => `
 Today's date is ${currentDate}.
-Generate exactly one random, specific educational topic relevant to K-12 educators.
+You are an experienced educational content strategist specializing in identifying relevant and timely topics for K-12 teachers, principals, and school administrators.
+Your task is to generate ONE random, high-quality educational topic that would be valuable for educators to read about.
+The topic should be:
+1. Specific and focused for K-12 educators
+2. Aligned with current educational trends and research
+3. Practical and actionable for classroom implementation or school leadership
+4. Relevant to today's educational challenges and opportunities
+
+Consider topics related to:
+- Current trending topics in education
+- Recent educational research findings
+- Emerging teaching methodologies
+- Educational technology trends
+- Classroom management innovations
+- Assessment and evaluation approaches
+- Student engagement strategies
+- Inclusive education practices
+- Social-emotional learning developments
+- Educational policy changes
+
+Select ONE category from the above list randomly, and then generate a specific, compelling topic within that category.
+
+RESPONSE FORMAT:
+1. Provide EXACTLY ONE educational topic that is between 10-100 characters.
+2. The topic should be specific enough to guide an article but broad enough to allow for comprehensive coverage.
+3. Write the topic directly, with no introduction or explanation.
+4. Do not use quotation marks or any other formatting around the topic.
+5. Return ONLY the topic text, nothing else.
+
+Examples of good random topics:
+- Project-Based Learning Strategies for Middle School Science: Increasing Engagement and Critical Thinking
+- Effective Intervention Techniques for Students with Dyslexia: Evidence-Based Approaches
+- Building Teacher-Parent Partnerships in the Digital Age: Communication Strategies that Work
+- Addressing Math Anxiety: Practical Methods to Build Student Confidence and Competence
+- Culturally Responsive Teaching in Diverse Classrooms: Implementation Framework and Outcomes
 `;

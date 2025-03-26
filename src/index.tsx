@@ -14,7 +14,7 @@ import {
 import type { ArticleType, ArticleTypeDB, Source } from "./types";
 import { articleSchema } from "./validation";
 import { generateText } from "ai";
-import { getSearch } from "./utils";
+import { getSearch, getTopic } from "./utils";
 import { OPTIMIZE_TOPIC_PROMPT, RANDOM_TOPIC_PROMPT } from "./prompts";
 
 // Import the workflow
@@ -66,6 +66,10 @@ app.get("/create", async (c) => {
 
 // POST /create - Handle Article Creation with IP-based Rate Limiting
 app.post("/create", async (c) => {
+	// Get form data first, so we have it for all error cases
+	const form = await c.req.formData();
+	const topic = form.get("topic") as string;
+
 	// Get client IP for rate limiting
 	const clientIP = c.req.header('cf-connecting-ip') ||
 		c.req.header('x-forwarded-for') ||
@@ -83,15 +87,13 @@ app.post("/create", async (c) => {
 			<Layout user={c.get("user")} title="Create New Article - Rate Limited">
 				<div className="container mx-auto max-w-3xl px-4">
 					<RateLimitErrorDisplay message="You've reached the article creation limit. Please try again in a minute." />
-					<CreateArticle formData={{ topic: "" }} />
+					{/* Pass back the original topic so it's not lost */}
+					<CreateArticle formData={{ topic }} />
 				</div>
 			</Layout>,
 			429
 		);
 	}
-
-	const form = await c.req.formData();
-	const topic = form.get("topic") as string;
 
 	const validationResult = articleSchema.safeParse({ topic });
 
@@ -104,6 +106,7 @@ app.post("/create", async (c) => {
 			<Layout user={c.get("user")} title="Create New Article - Error">
 				<div className="container mx-auto max-w-3xl px-4">
 					<ValidationErrorDisplay errors={errorMessages} />
+					{/* Pass back the original topic so it's not lost */}
 					<CreateArticle formData={{ topic }} />
 				</div>
 			</Layout>,
@@ -117,14 +120,14 @@ app.post("/create", async (c) => {
 
 	const articleData: ArticleType = {
 		id,
-		topic: validatedData.topic,
+		topic: validatedData.topic, // Pass original topic to workflow
 		status: 1,
 		user: userId,
 	};
 
 	const articleDataDB: Omit<ArticleTypeDB, 'created_at'> = {
 		id: articleData.id,
-		topic: articleData.topic,
+		topic: articleData.topic, // Store original topic initially
 		status: articleData.status,
 		user: articleData.user,
 		content: null,
@@ -312,7 +315,7 @@ app.post("/api/optimize-topic", async (c) => {
 
 		console.log(`[API] Optimizing topic: "${topic.substring(0, 50)}..."`);
 
-		const model = getSearch(c.env);
+		const model = getTopic(c.env);
 		const { text } = await generateText({
 			model,
 			prompt: OPTIMIZE_TOPIC_PROMPT(topic, currentDate),
@@ -363,7 +366,7 @@ app.post("/api/random-topic", async (c) => {
 
 		console.log(`[API] Generating random education topic...`);
 
-		const model = getSearch(c.env);
+		const model = getTopic(c.env);
 		const { text } = await generateText({
 			model,
 			prompt: RANDOM_TOPIC_PROMPT(currentDate),
