@@ -244,28 +244,48 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 						id="article-form"
 					>
 						<div className="space-y-3">
-							<div className="flex items-center justify-between">
+							<div className="flex flex-wrap items-center justify-between gap-2">
 								<label htmlFor="article-topic" className="block text-base font-semibold text-neutral-800">
 									What topic would you like an article about?
 								</label>
-								<button
-									type="button"
-									id="optimize-topic-btn"
-									className="btn btn-secondary btn-sm flex items-center gap-1"
-									title="Let AI suggest improvements to your topic"
-								>
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-										<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435Zm4.443 7.728-6.573 6.573a.59.59 0 0 1-.42.174.592.592 0 0 1-.42-.174L.596 8.308a.592.592 0 0 1 0-.84L7.168.896a.592.592 0 0 1 .84 0l6.573 6.573a.592.592 0 0 1-.087.824Z" />
-										<path d="M6.75 6.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm2.75.75a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0ZM8.75 6.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" />
-									</svg>
-									<span>Optimize Topic</span>
-									<span id="optimize-spinner" className="hidden">
-										<svg className="animate-spin h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-											<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-											<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+								<div className="flex flex-wrap gap-2">
+									<button
+										type="button"
+										id="random-topic-btn"
+										className="btn btn-secondary btn-sm flex items-center gap-1"
+										title="Get a random education topic suggestion"
+									>
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+											<path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+											<path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
 										</svg>
-									</span>
-								</button>
+										<span>Random Topic</span>
+										<span id="random-spinner" className="hidden">
+											<svg className="animate-spin h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+												<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+												<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+											</svg>
+										</span>
+									</button>
+									<button
+										type="button"
+										id="optimize-topic-btn"
+										className="btn btn-secondary btn-sm flex items-center gap-1"
+										title="Let AI suggest improvements to your topic"
+									>
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+											<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435Zm4.443 7.728-6.573 6.573a.59.59 0 0 1-.42.174.592.592 0 0 1-.42-.174L.596 8.308a.592.592 0 0 1 0-.84L7.168.896a.592.592 0 0 1 .84 0l6.573 6.573a.592.592 0 0 1-.087.824Z" />
+											<path d="M6.75 6.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm2.75.75a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0ZM8.75 6.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z" />
+										</svg>
+										<span>Optimize Topic</span>
+										<span id="optimize-spinner" className="hidden">
+											<svg className="animate-spin h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+												<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+												<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+											</svg>
+										</span>
+									</button>
+								</div>
 							</div>
 							<textarea
 								id="article-topic"
@@ -281,6 +301,11 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 								<h4 className="font-bold text-primary-700 mb-2">✨ Topic Optimized!</h4>
 								<p className="text-sm text-neutral-700">The AI has refined your topic to be more specific and educator-focused.</p>
 							</div>
+
+							<div id="random-result" className="hidden mt-2 p-4 border-2 border-secondary-400 bg-secondary-50">
+								<h4 className="font-bold text-secondary-700 mb-2">🎲 Random Topic Generated!</h4>
+								<p className="text-sm text-neutral-700">The AI has suggested a random educational topic.</p>
+							</div>
 						</div>
 
 						<div className="pt-2 flex justify-end">
@@ -290,94 +315,172 @@ export const CreateArticle: FC<{ formData?: { topic: string } }> = (props) => {
 						</div>
 					</form>
 
-					{/* Add client-side JavaScript for the optimize topic functionality */}
+					{/* Add client-side JavaScript for the optimize topic and random topic functionality */}
 					<script dangerouslySetInnerHTML={{
 						__html: `
-	document.addEventListener('DOMContentLoaded', () => {
-		const optimizeBtn = document.getElementById('optimize-topic-btn');
-		const topicTextarea = document.getElementById('article-topic');
-		const spinner = document.getElementById('optimize-spinner');
-		const resultBox = document.getElementById('optimization-result');
-		
-		if (!optimizeBtn || !topicTextarea || !spinner || !resultBox) return;
-		
-		optimizeBtn.addEventListener('click', async () => {
-			const topic = topicTextarea.value.trim();
-			
-			if (!topic || topic.length < 5) {
-				alert('Please enter a topic with at least 5 characters to optimize.');
-				return;
-			}
-			
-			try {
-				// Show spinner, disable button
-				spinner.classList.remove('hidden');
-				optimizeBtn.disabled = true;
-				resultBox.classList.add('hidden');
-				
-				// Make API request
-				const response = await fetch('/api/optimize-topic', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ topic }),
-				});
-				
-				// Handle rate limiting
-				if (response.status === 429) {
-					const errorData = await response.json();
-					const errorMessage = errorData.error || 'Rate limit exceeded. Please try again in a minute.';
-					
-					// Show rate limit error
-					const errorBox = document.createElement('div');
-					errorBox.className = 'mt-2 p-4 border-2 border-error-500 bg-error-50 rounded';
-					errorBox.innerHTML = \`
-						<h4 class="font-bold text-error-700 mb-2">❌ Rate Limit Exceeded</h4>
-						<p class="text-sm text-neutral-700">\${errorMessage}</p>
-					\`;
-					
-					// Insert after the textarea
-					topicTextarea.parentNode.insertBefore(errorBox, resultBox);
-					
-					// Remove after 5 seconds
-					setTimeout(() => {
-						errorBox.remove();
-					}, 5000);
-					
-					throw new Error(errorMessage);
-				}
-				
-				if (!response.ok) {
-					const errorData = await response.json();
-					throw new Error(errorData.error || 'Failed to optimize topic');
-				}
-				
-				const data = await response.json();
-				
-				// Update textarea with optimized topic
-				if (data.optimizedTopic) {
-					topicTextarea.value = data.optimizedTopic;
-					resultBox.classList.remove('hidden');
-					
-					// Briefly highlight the textarea
-					topicTextarea.classList.add('bg-primary-50', 'border-primary-500');
-					setTimeout(() => {
-						topicTextarea.classList.remove('bg-primary-50', 'border-primary-500');
-					}, 1500);
-				}
-			} catch (error) {
-				console.error('Error optimizing topic:', error);
-				if (!error.message.includes('Rate limit exceeded')) {
-					alert('Failed to optimize topic: ' + (error.message || 'Unknown error'));
-				}
-			} finally {
-				// Hide spinner, re-enable button
-				spinner.classList.add('hidden');
-				optimizeBtn.disabled = false;
-			}
-		});
-	});
+						document.addEventListener('DOMContentLoaded', () => {
+							const optimizeBtn = document.getElementById('optimize-topic-btn');
+							const randomBtn = document.getElementById('random-topic-btn');
+							const topicTextarea = document.getElementById('article-topic');
+							const optimizeSpinner = document.getElementById('optimize-spinner');
+							const randomSpinner = document.getElementById('random-spinner');
+							const optimizationResult = document.getElementById('optimization-result');
+							const randomResult = document.getElementById('random-result');
+							
+							if (!optimizeBtn || !randomBtn || !topicTextarea || !optimizeSpinner || !randomSpinner || !optimizationResult || !randomResult) return;
+							
+							// Handle Optimize Topic button
+							optimizeBtn.addEventListener('click', async () => {
+								const topic = topicTextarea.value.trim();
+								
+								if (!topic || topic.length < 5) {
+									alert('Please enter a topic with at least 5 characters to optimize.');
+									return;
+								}
+								
+								try {
+									// Show spinner, disable button
+									optimizeSpinner.classList.remove('hidden');
+									optimizeBtn.disabled = true;
+									optimizationResult.classList.add('hidden');
+									randomResult.classList.add('hidden');
+									
+									// Make API request
+									const response = await fetch('/api/optimize-topic', {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json',
+										},
+										body: JSON.stringify({ topic }),
+									});
+									
+									// Handle rate limiting
+									if (response.status === 429) {
+										const errorData = await response.json();
+										const errorMessage = errorData.error || 'Rate limit exceeded. Please try again in a minute.';
+										
+										// Show rate limit error
+										const errorBox = document.createElement('div');
+										errorBox.className = 'mt-2 p-4 border-2 border-error-500 bg-error-50 rounded';
+										errorBox.innerHTML = \`
+											<h4 class="font-bold text-error-700 mb-2">❌ Rate Limit Exceeded</h4>
+											<p class="text-sm text-neutral-700">\${errorMessage}</p>
+										\`;
+										
+										// Insert after the textarea
+										topicTextarea.parentNode.insertBefore(errorBox, optimizationResult);
+										
+										// Remove after 5 seconds
+										setTimeout(() => {
+											errorBox.remove();
+										}, 5000);
+										
+										throw new Error(errorMessage);
+									}
+									
+									if (!response.ok) {
+										const errorData = await response.json();
+										throw new Error(errorData.error || 'Failed to optimize topic');
+									}
+									
+									const data = await response.json();
+									
+									// Update textarea with optimized topic
+									if (data.optimizedTopic) {
+										topicTextarea.value = data.optimizedTopic;
+										optimizationResult.classList.remove('hidden');
+										randomResult.classList.add('hidden');
+										
+										// Briefly highlight the textarea
+										topicTextarea.classList.add('bg-primary-50', 'border-primary-500');
+										setTimeout(() => {
+											topicTextarea.classList.remove('bg-primary-50', 'border-primary-500');
+										}, 1500);
+									}
+								} catch (error) {
+									console.error('Error optimizing topic:', error);
+									if (!error.message.includes('Rate limit exceeded')) {
+										alert('Failed to optimize topic: ' + (error.message || 'Unknown error'));
+									}
+								} finally {
+									// Hide spinner, re-enable button
+									optimizeSpinner.classList.add('hidden');
+									optimizeBtn.disabled = false;
+								}
+							});
+
+							// Handle Random Topic button
+							randomBtn.addEventListener('click', async () => {
+								try {
+									// Show spinner, disable button
+									randomSpinner.classList.remove('hidden');
+									randomBtn.disabled = true;
+									randomResult.classList.add('hidden');
+									optimizationResult.classList.add('hidden');
+									
+									// Make API request
+									const response = await fetch('/api/random-topic', {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json',
+										}
+									});
+									
+									// Handle rate limiting
+									if (response.status === 429) {
+										const errorData = await response.json();
+										const errorMessage = errorData.error || 'Rate limit exceeded. Please try again in a minute.';
+										
+										// Show rate limit error
+										const errorBox = document.createElement('div');
+										errorBox.className = 'mt-2 p-4 border-2 border-error-500 bg-error-50 rounded';
+										errorBox.innerHTML = \`
+											<h4 class="font-bold text-error-700 mb-2">❌ Rate Limit Exceeded</h4>
+											<p class="text-sm text-neutral-700">\${errorMessage}</p>
+										\`;
+										
+										// Insert after the textarea
+										topicTextarea.parentNode.insertBefore(errorBox, randomResult);
+										
+										// Remove after 5 seconds
+										setTimeout(() => {
+											errorBox.remove();
+										}, 5000);
+										
+										throw new Error(errorMessage);
+									}
+									
+									if (!response.ok) {
+										const errorData = await response.json();
+										throw new Error(errorData.error || 'Failed to generate random topic');
+									}
+									
+									const data = await response.json();
+									
+									// Update textarea with random topic
+									if (data.randomTopic) {
+										topicTextarea.value = data.randomTopic;
+										randomResult.classList.remove('hidden');
+										optimizationResult.classList.add('hidden');
+										
+										// Briefly highlight the textarea
+										topicTextarea.classList.add('bg-secondary-50', 'border-secondary-500');
+										setTimeout(() => {
+											topicTextarea.classList.remove('bg-secondary-50', 'border-secondary-500');
+										}, 1500);
+									}
+								} catch (error) {
+									console.error('Error generating random topic:', error);
+									if (!error.message.includes('Rate limit exceeded')) {
+										alert('Failed to generate random topic: ' + (error.message || 'Unknown error'));
+									}
+								} finally {
+									// Hide spinner, re-enable button
+									randomSpinner.classList.add('hidden');
+									randomBtn.disabled = false;
+								}
+							});
+						});
 						`
 					}} />
 				</div>

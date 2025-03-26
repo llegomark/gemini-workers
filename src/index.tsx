@@ -15,7 +15,7 @@ import type { ArticleType, ArticleTypeDB, Source } from "./types";
 import { articleSchema } from "./validation";
 import { generateText } from "ai";
 import { getSearch } from "./utils";
-import { OPTIMIZE_TOPIC_PROMPT } from "./prompts";
+import { OPTIMIZE_TOPIC_PROMPT, RANDOM_TOPIC_PROMPT } from "./prompts";
 
 // Import the workflow
 export { ArticleWorkflow } from "./workflows";
@@ -330,6 +330,56 @@ app.post("/api/optimize-topic", async (c) => {
 		console.error("[API] Error optimizing topic:", error);
 		return c.json({
 			error: "Failed to optimize topic. Please try again."
+		}, 500);
+	}
+});
+
+// POST /api/random-topic - Generate a random education topic with Rate Limiting
+app.post("/api/random-topic", async (c) => {
+	try {
+		// Get client IP for rate limiting with multiple fallbacks
+		const clientIP = c.req.header('cf-connecting-ip') ||
+			c.req.header('x-forwarded-for') ||
+			c.req.header('x-real-ip') ||
+			'unknown';
+
+		// Log which IP we're using for rate limiting
+		console.log(`[Rate Limit] Using IP for random topic generation: ${clientIP}`);
+
+		// Apply rate limiting based only on IP - use the same rate limiter as optimize
+		const rateLimitResult = await c.env.OPTIMIZE_RATE_LIMITER.limit({ key: clientIP });
+		if (!rateLimitResult.success) {
+			console.log(`[Rate Limit] Rate limit exceeded for random topic generation by IP: ${clientIP}`);
+			return c.json({
+				error: "Rate limit exceeded. Please try again in a minute."
+			}, 429);
+		}
+
+		const currentDate = new Date().toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
+
+		console.log(`[API] Generating random education topic...`);
+
+		const model = getSearch(c.env);
+		const { text } = await generateText({
+			model,
+			prompt: RANDOM_TOPIC_PROMPT(currentDate),
+		});
+
+		// Trim and clean the result
+		const randomTopic = text.trim();
+		console.log(`[API] Generated random topic: "${randomTopic.substring(0, 50)}..."`);
+
+		return c.json({
+			randomTopic: randomTopic
+		});
+	} catch (error) {
+		console.error("[API] Error generating random topic:", error);
+		return c.json({
+			error: "Failed to generate random topic. Please try again."
 		}, 500);
 	}
 });

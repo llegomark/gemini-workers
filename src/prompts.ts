@@ -152,3 +152,11 @@ Optimized: Effective Digital Tools for K-12 Classrooms: Implementation Strategie
 Original: "Teaching reading comprehension"
 Optimized: Evidence-Based Reading Comprehension Strategies for Elementary Students: Practical Approaches
 `;
+
+/**
+ * Prompt for generating genuinely random and novel education-related topics for K-12 educators
+ */
+export const RANDOM_TOPIC_PROMPT = (currentDate: string) => `
+Today's date is ${currentDate}.
+Generate exactly one random, specific educational topic relevant to K-12 educators.
+`;
